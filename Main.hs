@@ -4,7 +4,6 @@ myMatrix :: Matrix
 myMatrix = [[1,2,5], [2,3,2], [2,4,8]]
 
 main = do
-    -- todo: criar funcao de printMatrixar matriz com linhas uma baixo da outra
     printMatrix myMatrix
     print(getMatrixRow 2 myMatrix)
     print(getNRowsMatrix myMatrix)
