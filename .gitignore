@@ -1,0 +1,6 @@
+# Ignora arquivos intermediários de compilação
+*.hi
+*.o
+
+# Se o nome ou caminho do arquivo executável mudar tem que mudar aqui também
+Main
