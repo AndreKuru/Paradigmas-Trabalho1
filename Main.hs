@@ -14,4 +14,5 @@ main = do
     printMatrix(splitMatrixLines 1 2 myMatrix)
     printMatrix(setMatrixRow 2 [0, 0, 0] myMatrix)
     printMatrix(setMatrixElement 1 1 59 myMatrix)
-    printMatrix (setMatrixColumn 3 [0,0,0] myMatrix)
+    printMatrix (setMatrixColumn 2 [0,0,0] myMatrix)
+    printMatrix(createEmptyMatrix 7 5)

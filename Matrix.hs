@@ -9,6 +9,20 @@ type Array = [Int]
 type Matrix = [Array]
 -- a matriz é uma lista de linhas
 
+createEmptyArray :: Int -> Array
+createEmptyArray 0 = []
+createEmptyArray n = [0] ++ createEmptyArray j
+    where j = n-1
+
+createEmptyMatrix :: Int -> Int -> Matrix
+createEmptyMatrix 0 _ = []
+createEmptyMatrix _ 0 = []
+createEmptyMatrix 1 n = [createEmptyArray n]
+createEmptyMatrix n 1 = [[0]] ++ createEmptyMatrix j 1
+    where j = n-1
+createEmptyMatrix n m = [createEmptyArray m] ++ createEmptyMatrix j m
+    where j = n-1
+
 getArrayLength :: Array -> Int
 getArrayLength [] = 0
 getArrayLength (a:b) = 1 + getArrayLength b
@@ -47,7 +61,7 @@ getMatrixRow n (a:b) = getMatrixRow m b
 -- assume que todas as linhas tem o mesmo comprimento
 getNColumnsMatrix :: Matrix -> Int
 getNColumnsMatrix [] = 0
-getNColumnsMatrix (a:b) = 1 + getArrayLength a
+getNColumnsMatrix (a:b) = getArrayLength a
 
 getMatrixColumn :: Int -> Matrix -> Array
 getMatrixColumn _ [] = []
