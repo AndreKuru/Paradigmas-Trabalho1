@@ -57,9 +57,9 @@ getMatrixColumn n (a:b) =
     else
         []
 
-getMatrixElement :: Int -> Int -> Matrix -> t
-getMatrixElement _ _ [] = " "
-getMatrixElement row column matrix =
+getGenericMatrixElement :: Int -> Int -> Matrix -> t
+getGenericMatrixElement _ _ [] = " "
+getGenericMatrixElement row column matrix =
     if column >= 0 && (column + 1) < getNColumnsMatrix matrix then
         getMatrixRow row matrix!!column
     else
