@@ -2,7 +2,18 @@ import Matrix
 import MarkingsMatrix
 
 myMatrix :: Matrix
-myMatrix = [[1,2,5], [2,3,2], [2,4,8]]
+myMatrix = [[2, 3, 1, 4], 
+            [1, 4, 3, 2], 
+            [4, 1, 2, 3], 
+            [3, 2, 4, 1]] 
+
+myMatrixOperator = [["<", "|", "<", "|"], 
+                    ["v", "^", "^", "v"], 
+                    ["<", "|", ">", "|"], 
+                    ["|", "|", "|", "|"], 
+                    [">", "|", "<", "|"], 
+                    ["v", "^", "^", "v"], 
+                    [">", "|", ">", "|"]]
 
 main = do
     let myMatrix2 = fillNewMatrix 7 5 False
@@ -14,3 +25,4 @@ main = do
     let myMatrix7 = markMatrix 0 1 myMatrix6
     printMarkingsMatrix myMatrix7
     printMarkingsMatrix(clearRowAndColumn 2 2 myMatrix7)
+    print (fillNewArray 6 True)

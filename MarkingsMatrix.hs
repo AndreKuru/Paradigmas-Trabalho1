@@ -10,7 +10,7 @@ import Matrix
 type MarkingsArray = [Bool]
 type MarkingsMatrix = [MarkingsArray]
 
--- insere ordem da matriz para descobrir tamanho das "caixas" de comparadores
+-- insere ordem da matriz para descobrir tamanho das "caixas" (ou regiões) de comparadores
 boxSize :: Int -> [Int]
 boxSize 0 = [0, 0]
 boxSize 1 = [1, 1]

@@ -9,6 +9,7 @@ type Array = [Int]
 type Matrix = [Array]
 -- a matriz é uma lista de linhas
 
+-- *Preencher a matriz com o valor passado: linhas -> colunas -> valor a preencher -> matriz preenchida
 fillNewMatrix :: Int -> Int -> t -> [[t]]
 fillNewMatrix 0 _ _ = []
 fillNewMatrix _ 0 _ = []
@@ -18,11 +19,12 @@ fillNewMatrix n 1 value = [[value]] ++ fillNewMatrix j 1 value
 fillNewMatrix n m value = [fillNewArray m value] ++ fillNewMatrix j m value
     where j = n-1
 
+-- *Preenche um array com um determinado valor: tamanho -> valor para preencher -> array preenchido
 fillNewArray :: Int -> t -> [t]
 fillNewArray 0 _ = []
-fillNewArray n value = [value] ++ fillNewArray j value
-    where j = n-1
+fillNewArray size value = [value] ++ (fillNewArray (size - 1) value)
 
+-- *Retorna o tamanho de um array: array -> tamanho
 getArrayLength :: [t] -> Int
 getArrayLength [] = 0
 getArrayLength (a:b) = 1 + getArrayLength b
@@ -31,6 +33,8 @@ getArrayLength (a:b) = 1 + getArrayLength b
 -- por enquanto, o começo é inclusivo mas o final não
 -- ex: splitArray 2 4 [1,2,3,4,5] = [3,4]
 -- se end for maior que o comprimento do array, só ignora o que sobra
+
+-- *Seleciona um trecho de array: começo -> fim -> array -> trecho selecionado
 splitArray :: Int -> Int -> [t] -> [t]
 splitArray _ _ [] = []
 splitArray 0 0 _ = []
@@ -39,6 +43,7 @@ splitArray beginning 0 (a:b) = [a]
 splitArray beginning end (a:b) =
         []++splitArray (beginning-1) (end-1) b
 
+-- *Definir um elemento num array: Posição do elemento -> valor a ser definido ->  array -> array modificado
 setArrayElement :: Int -> t -> [t] -> [t]
 setArrayElement _ _ [] = []
 setArrayElement index value array =
@@ -48,10 +53,12 @@ setArrayElement index value array =
         splitArray 0 index array ++ [value] ++ splitArray (index+1) arrayLength array
     where arrayLength = getArrayLength array
 
+-- *Retorna a quantidade de linhas da matriz: matriz -> quantidade de linhas
 getNRowsMatrix :: [[t]] -> Int
 getNRowsMatrix [] = 0
 getNRowsMatrix (a:b) = 1 + getNRowsMatrix b
 
+-- *Retorna uma linha da matriz: número da linha -> matriz -> linha
 getMatrixRow :: Int -> [[t]] -> [t]
 getMatrixRow _ [] = []
 getMatrixRow 0 (a:b) = a
@@ -59,10 +66,12 @@ getMatrixRow n (a:b) = getMatrixRow m b
     where m = n-1
 
 -- assume que todas as linhas tem o mesmo comprimento
+-- *Retorna a quantidade de colunas da matriz: matriz -> quantidade de colunas
 getNColumnsMatrix :: [[t]] -> Int
 getNColumnsMatrix [] = 0
 getNColumnsMatrix (a:b) = getArrayLength a
 
+-- *Retorna a coluna da matriz: posição da coluna -> matriz -> coluna selecionada
 getMatrixColumn :: Int -> [[t]] -> [t]
 getMatrixColumn _ [] = []
 getMatrixColumn n (a:b) =
@@ -72,6 +81,7 @@ getMatrixColumn n (a:b) =
         []
 
 -- no tabuleiro, todos os números válidos são positivos
+-- *Retorna elemento da matriz: linha do elemento -> coluna do elemento -> Matriz -> elemento
 getMatrixElement :: Int -> Int -> Matrix -> Int
 getMatrixElement _ _ [] = - 1
 getMatrixElement row column matrix =
@@ -84,6 +94,8 @@ getMatrixElement row column matrix =
 -- por enquanto, o começo é inclusivo mas o final não
 -- ex: splitArray 2 4 [1,2,3,4,5] = [3,4]
 -- se end for maior que o número de linhas da matriz, só ignora o que sobra
+-- Útil para modificar uma matriz
+-- Retorna as linhas selecionadas: começo -> final -> matriz -> seleção de linhas
 splitMatrixLines :: Int -> Int -> [[t]] -> [[t]]
 splitMatrixLines _ _ [] = []
 splitMatrixLines 0 0 _ = []
@@ -92,6 +104,7 @@ splitMatrixLines beginning 0 (a:b) = [a]
 splitMatrixLines beginning end (a:b) =
         []++splitMatrixLines (beginning-1) (end-1) b
 
+-- Modifica uma linha de uma matriz: posição da linha -> nova linha -> matriz a ser modificada -> matriz modificada
 setMatrixRow :: Int -> [t] -> [[t]] -> [[t]]
 setMatrixRow _ _ [] = []
 setMatrixRow rowNumber row matrix =
@@ -101,12 +114,14 @@ setMatrixRow rowNumber row matrix =
         splitMatrixLines 0 rowNumber matrix ++ [row] ++ splitMatrixLines (rowNumber+1) matrixLength matrix
     where matrixLength = getNRowsMatrix matrix
 
+-- *Modifica uma coluna de uma matriz: posição da coluna -> nova coluna -> matriz a ser modificada -> matriz modificada
 setMatrixColumn :: Int -> [t] -> [[t]] -> [[t]]
 setMatrixColumn _ _ [] = []
 setMatrixColumn _ [] matrix = matrix
 setMatrixColumn column (a:b) (c:d) = 
     [setArrayElement column a c] ++ setMatrixColumn column b d
 
+-- *Modifica um elemento de uma matriz: linha do elemento -> coluna do elemento -> valor do elemento -> matriz a ser modificada -> matriz modificada
 setMatrixElement :: Int -> Int -> t -> [[t]] -> [[t]]
 setMatrixElement _ _ _ [] = []
 setMatrixElement row column value matrix = do
@@ -115,16 +130,15 @@ setMatrixElement row column value matrix = do
     setMatrixRow row newRow matrix
 
 -- Talvez devesse ser feito em uma classe, não sei
+-- *Imprime a matriz: matriz a ser impressa -> IO
 printMatrix :: Matrix -> IO ()
 printMatrix [] = putStrLn []
 printMatrix (a:b) = do
     putStrLn(arrayString a)
     printMatrix b
 
-matrixString :: Matrix -> String
-matrixString [] = []
-matrixString (a:b) = arrayString a ++ matrixString b
-
+-- Útil para a impressão
+-- Transforma um array em uma linha 
 arrayString :: Array -> String
 arrayString [] = []
 arrayString (a:b) = show a ++ " " ++ arrayString b
