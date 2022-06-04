@@ -25,15 +25,15 @@ boxSize 9 = [3, 3]
 -- boxes (a:b) =
 --     let boxsize = boxSize getNColumnsMatrix (a:b)
 
--- TODO
--- divideRowPerBox :: Int -> Int -> MarkingsArray -> MarkingsMatrix
--- divideRowPerBox 0 _ row = []
--- divideRowPerBox 1 _ row = []
--- divideRowPerBox boxWidth (a:b) boxesPerRow=
---     if boxWidth >= getArrayLength row then
---         [row]
---     else
---         [a] ++ divideRowPerBox boxWidth-1 b 
+splitRowPerBoxes :: Int -> Int -> [t] -> [[t]]
+splitRowPerBoxes _ 0 _ = []
+splitRowPerBoxes 0 _ row = []
+splitRowPerBoxes boxWidth boxesPerRow row =
+    --boxesPerRow = getArrayLength (a:b) / boxWidth
+    [splitArray 0 boxWidth row]++splitRowPerBoxes boxWidth k newRow
+    where newRow = splitArray boxWidth rowLength row
+          k = boxesPerRow-1
+          rowLength = getArrayLength row
 
 markMatrix :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markMatrix row column = setMatrixElement row column True
