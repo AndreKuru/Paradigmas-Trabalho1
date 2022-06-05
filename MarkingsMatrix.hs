@@ -95,7 +95,20 @@ boxesAsRows matrix = do
     let boxesPerRow = div matrixOrder boxwidth
     let boxSegments = splitMatrixPerBoxesPerLine boxwidth boxesPerRow matrix
     let orderedBoxSegments = mapColumns boxesPerRow matrixOrder boxSegments
-    concatBoxSegments orderedBoxSegments boxheight
+    let concatBoxes = concatBoxSegments orderedBoxSegments boxheight
+    let boxesPerColumn = div matrixOrder boxheight
+    mapColumns boxesPerColumn matrixOrder concatBoxes
+
+-- converte index da matriz de caixas como colunas para index da matrix original
+getCorrectIndex :: [Int] -> Int -> [Int]
+getCorrectIndex [] _ = []
+getCorrectIndex _ 0 = []
+getCorrectIndex (a:b) matrixOrder = do
+    let indexMatrix = fillNewMatrix matrixOrder matrixOrder False
+    nColumns <- b
+    let markedIndexMatrix = markMatrix a nColumns indexMatrix
+    let boxesIndexMatrix = boxesAsRows(boxesAsRows markedIndexMatrix)
+    getElementIndexMatrix True boxesIndexMatrix
 
 markMatrix :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markMatrix row column = setMatrixElement row column True
