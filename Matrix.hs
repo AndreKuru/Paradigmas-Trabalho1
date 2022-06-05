@@ -93,6 +93,12 @@ getMatrixElement row column matrix =
     else
         (-1)
 
+-- Retorna elemento da matriz de operadores:
+-- linha -> coluna -> matriz -> operador
+getMatrixOperatorElement :: Int -> Int -> [[t]] -> t
+getMatrixOperatorElement row column matrix = 
+  getMatrixRow row matrix!!column
+
 -- todo: ainda tá errado (se beggining > end ou se inserir número negativo dá errado)
 -- por enquanto, o começo é inclusivo mas o final não
 -- ex: splitArray 2 4 [1,2,3,4,5] = [3,4]
