@@ -66,7 +66,8 @@ getMatrixRow n (a:b) = getMatrixRow m b
     where m = n-1
 
 -- assume que todas as linhas tem o mesmo comprimento
--- *Retorna a quantidade de colunas da matriz: matriz -> quantidade de colunas
+-- *Retorna a quantidade de colunas da matriz: 
+-- matriz -> quantidade de colunas
 getNColumnsMatrix :: [[t]] -> Int
 getNColumnsMatrix [] = 0
 getNColumnsMatrix (a:b) = getArrayLength a
