@@ -2,17 +2,20 @@ import Matrix
 import MarkingsMatrix
 
 myMatrix :: Matrix
-myMatrix = [[1,2,5], [2,3,2], [2,4,8]]
+myMatrix = [[1,2,5,6,4,5], [2,3,2,1,3,5], [2,4,8,9,3,5], [2,5,6,8,4,3],[1,5,7,3,4,5],[4,5,6,8,4,3]]
 
 main = do
-    let myMatrix2 = fillNewMatrix 7 5 False
-    printMarkingsMatrix myMatrix2
-    let myMatrix3 = markMatrix 2 2 myMatrix2
-    let myMatrix4 = markMatrix 2 4 myMatrix3
-    let myMatrix5 = markMatrix 0 2 myMatrix4
-    let myMatrix6 = markMatrix 3 4 myMatrix5
-    let myMatrix7 = markMatrix 0 1 myMatrix6
-    printMarkingsMatrix myMatrix7
-    printMarkingsMatrix(clearRowAndColumn 2 2 myMatrix7)
-    print(splitRowPerBoxes 2 4 [1, 2, 3, 4, 5, 6, 7, 8])
-    -- print createEmptyMatrix 5 5
+    printMatrix myMatrix
+    -- let matrixOrder = getNColumnsMatrix myMatrix
+    --let nRows = getNRowsMatrix myMatrix
+    -- let boxwidth = boxWidth matrixOrder
+    -- let boxheight = boxHeight matrixOrder
+    -- let boxesPerRow = div matrixOrder boxwidth
+    -- let boxSegments = splitMatrixPerBoxesPerLine boxwidth boxesPerRow myMatrix
+    -- let orderedBoxSegments = mapColumns boxesPerRow matrixOrder boxSegments
+    -- print orderedBoxSegments
+    -- print(getNRowsMatrix orderedBoxSegments)
+    -- let final = concatBoxSegments orderedBoxSegments boxheight boxesPerRow
+    -- print final
+    --print(concatMatrixLines 0 nRows myMatrix)
+    print(boxesAsRows myMatrix)

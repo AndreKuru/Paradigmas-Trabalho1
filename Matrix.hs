@@ -115,16 +115,12 @@ setMatrixElement row column value matrix = do
     setMatrixRow row newRow matrix
 
 -- Talvez devesse ser feito em uma classe, não sei
-printMatrix :: Matrix -> IO ()
+printMatrix :: (Show t) => [[t]] -> IO ()
 printMatrix [] = putStrLn []
 printMatrix (a:b) = do
     putStrLn(arrayString a)
     printMatrix b
 
-matrixString :: Matrix -> String
-matrixString [] = []
-matrixString (a:b) = arrayString a ++ matrixString b
-
-arrayString :: Array -> String
+arrayString :: (Show t) => [t] -> String
 arrayString [] = []
 arrayString (a:b) = show a ++ " " ++ arrayString b
