@@ -155,17 +155,3 @@ clearRowAndColumn row column matrix = do
     let clearArray = fillNewArray (getNColumnsMatrix matrix) False
     let partiallyClearMatrix = setMatrixRow row clearArray matrix
     setMatrixColumn column clearArray partiallyClearMatrix
-
-printMarkingsMatrix :: MarkingsMatrix -> IO ()
-printMarkingsMatrix [] = putStrLn []
-printMarkingsMatrix (a:b) = do
-    putStrLn(markingsArrayString a)
-    printMarkingsMatrix b
-
-markingsMatrixString :: MarkingsMatrix -> String
-markingsMatrixString [] = []
-markingsMatrixString (a:b) = markingsArrayString a ++ markingsMatrixString b
-
-markingsArrayString :: MarkingsArray -> String
-markingsArrayString [] = []
-markingsArrayString (a:b) = show a ++ " " ++ markingsArrayString b
