@@ -9,7 +9,8 @@ type Array = [Int]
 type Matrix = [Array]
 -- a matriz é uma lista de linhas
 
--- *Preencher a matriz com o valor passado: linhas -> colunas -> valor a preencher -> matriz preenchida
+-- *Preencher a matriz com o valor passado: 
+-- quantidade de linhas -> quantidade de colunas -> valor a preencher -> matriz preenchida
 fillNewMatrix :: Int -> Int -> t -> [[t]]
 fillNewMatrix 0 _ _ = []
 fillNewMatrix _ 0 _ = []
@@ -19,7 +20,8 @@ fillNewMatrix n 1 value = [[value]] ++ fillNewMatrix j 1 value
 fillNewMatrix n m value = [fillNewArray m value] ++ fillNewMatrix j m value
     where j = n-1
 
--- *Preenche um array com um determinado valor: tamanho -> valor para preencher -> array preenchido
+-- *Preenche um array com um determinado valor: 
+-- tamanho -> valor para preencher -> array preenchido
 fillNewArray :: Int -> t -> [t]
 fillNewArray 0 _ = []
 fillNewArray size value = [value] ++ (fillNewArray (size - 1) value)
@@ -122,7 +124,8 @@ setMatrixColumn _ [] matrix = matrix
 setMatrixColumn column (a:b) (c:d) = 
     [setArrayElement column a c] ++ setMatrixColumn column b d
 
--- *Modifica um elemento de uma matriz: linha do elemento -> coluna do elemento -> valor do elemento -> matriz a ser modificada -> matriz modificada
+-- *Modifica um elemento de uma matriz:
+-- linha do elemento -> coluna do elemento -> valor do elemento -> matriz a ser modificada -> matriz modificada
 setMatrixElement :: Int -> Int -> t -> [[t]] -> [[t]]
 setMatrixElement _ _ _ [] = []
 setMatrixElement row column value matrix = do
