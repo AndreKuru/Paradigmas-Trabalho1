@@ -48,6 +48,28 @@ setArrayElement index value array =
         splitArray 0 index array ++ [value] ++ splitArray (index+1) arrayLength array
     where arrayLength = getArrayLength array
 
+containsElement :: (Eq t) => t -> [t] -> Bool
+containsElement _ [] = False
+containsElement element (a:b) = (a == element) || containsElement element b
+
+countElementOcurrences :: (Eq t) => t -> [t] -> Int
+countElementOcurrences _ [] = 0
+countElementOcurrences element (a:b) | a == element = 1 + countElementOcurrences element b
+                                     | otherwise = 0 + countElementOcurrences element b
+
+containsOneElement :: (Eq t) => t -> [t] -> Bool
+containsOneElement _ [] = False
+containsOneElement element array =
+    countElementOcurrences element array == 1
+
+getElementIndex :: (Eq t) => t -> [t] -> Int
+getElementIndex _ [] = 0
+getElementIndex element (a:b) =
+    if containsElement element [a] then
+        0
+    else
+        1 + getElementIndex element b
+
 getNRowsMatrix :: [[t]] -> Int
 getNRowsMatrix [] = 0
 getNRowsMatrix (a:b) = 1 + getNRowsMatrix b

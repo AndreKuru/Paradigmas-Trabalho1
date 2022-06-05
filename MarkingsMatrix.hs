@@ -12,14 +12,17 @@ type MarkingsMatrix = [MarkingsArray]
 
 -- insere ordem da matriz para descobrir tamanho das "caixas" de comparadores
 boxWidth :: Int -> Int
-boxWidth 4 = 2
-boxWidth 6 = 2
-boxWidth 9 = 3
+boxWidth n | n == 4 = 2
+           | n == 6 = 2
+           | n == 9 = 3
+           | otherwise = 0
+
 
 boxHeight :: Int -> Int
-boxHeight 4 = 2
-boxHeight 6 = 3
-boxHeight 9 = 3
+boxHeight n | n == 4 = 2
+            | n == 6 = 3
+            | n == 9 = 3
+            | otherwise = 0
 
 -- a partir daqui até antes de boxesAsRows é tudo função auxiliar
 splitRowPerBoxes :: Int -> Int -> [t] -> [[t]]
@@ -97,12 +100,41 @@ boxesAsRows matrix = do
 markMatrix :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markMatrix row column = setMatrixElement row column True
 
+-- Caixa já estando como linha
+-- Checa se a caixa só tem 1 True
+checkBox :: [Bool] -> Bool
+checkBox = containsOneElement True
+
+-- Caixa já estando como linha
+-- Retorna index da primeira caixa encontrada que só tem 1 True
+getBoxIndex :: [[Bool]] -> Int
+getBoxIndex [] = 0
+getBoxIndex (a:b) =
+    if checkBox a then
+        0
+    else
+        1 + getBoxIndex b
+
+-- checa todas as caixas por 1 True e retorna index da caixa e da marcação
+-- operações extremamente redundantes
+getCorrectMarkingIndex :: [[Bool]] -> [Int]
+getCorrectMarkingIndex [] = [-1,-1]
+getCorrectMarkingIndex boxes = do
+    let boxIndex = getBoxIndex boxes
+    if boxIndex > 0 && boxIndex < getNRowsMatrix boxes then
+        [boxIndex, getElementIndex True (boxes!!boxIndex)]
+    else
+        [-1, -1]
+
 -- TODO: funçao de checar todas as caixas por 1 único true a partir de uma matriz de marcações normal
+-- e retornar o index da marcação pra pôr o número na matriz de números
 -- (chamar boxesAsRows dentro da função)
+checkAllBoxes :: MarkingsMatrix -> [Int]
+checkAllBoxes matrix = do
+    let boxRows = boxesAsRows matrix
+    getCorrectMarkingIndex boxRows
 
--- TODO: função de contains em um array
-
--- quando é oficialmente anotado o menor número de alguma caixa, é preciso 
+-- quando é oficialmente anotado o menor número de alguma caixa, é preciso
 -- limpar as marcações da linha e coluna do elemento
 clearRowAndColumn :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 clearRowAndColumn _ _ [] = []
