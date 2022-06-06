@@ -2,6 +2,7 @@
 {-# HLINT ignore "Use foldr" #-}
 {-# HLINT ignore "Use :" #-}
 {-# HLINT ignore "Evaluate" #-}
+{-# HLINT ignore "Redundant bracket" #-}
 
 module Matrix where
 
@@ -84,8 +85,7 @@ getNRowsMatrix (a:b) = 1 + getNRowsMatrix b
 getMatrixRow :: Int -> [[t]] -> [t]
 getMatrixRow _ [] = []
 getMatrixRow 0 (a:b) = a
-getMatrixRow n (a:b) = getMatrixRow m b
-    where m = n-1
+getMatrixRow rowIndex (a:b) = getMatrixRow (rowIndex-1) b
 
 -- assume que todas as linhas tem o mesmo comprimento
 -- *Retorna a quantidade de colunas da matriz: 
@@ -109,17 +109,20 @@ getMatrixColumn n (a:b) =
 getMatrixElement :: Int -> Int -> Matrix -> Int
 getMatrixElement _ _ [] = - 1
 getMatrixElement row column matrix =
-    if (column >= 0) && (column < (getNColumnsMatrix matrix)) then
-        getMatrixRow row matrix!!column
+    if (column >= 0) && (column < getNColumnsMatrix matrix)  && (row >= 0) && (row < getNRowsMatrix matrix) then
+        (getMatrixRow row matrix)!!column
     else
         (-1)
 
 -- Retorna elemento da matriz de operadores:
 -- linha -> coluna -> matriz -> operador
-getMatrixOperatorElement :: Int -> Int -> [[t]] -> t
-getMatrixOperatorElement row column matrix = 
-  getMatrixRow row matrix!!column
-
+getOperatorMatrixElement :: Int -> Int -> [[Char]] -> Char
+getOperatorMatrixElement row column matrix = 
+    if (column >= 0) && (column < getNColumnsMatrix matrix) && (row >= 0) && (row < getNRowsMatrix matrix) then
+        (getMatrixRow row matrix)!!column
+    else
+        '|'
+        
 -- todo: ainda tá errado (se beggining > end ou se inserir número negativo dá errado)
 -- por enquanto, o começo é inclusivo mas o final não
 -- ex: splitArray 2 4 [1,2,3,4,5] = [3,4]

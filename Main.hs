@@ -1,43 +1,56 @@
 import Matrix
 import MarkingsMatrix
-import Solver
+import PuzzleSolver
+import Backtracker
 
-myMatrix :: Matrix
-myMatrix = [[2, 3, 1, 4], 
-            [1, 4, 3, 2], 
-            [4, 1, 2, 3], 
-            [3, 2, 4, 1]] 
+correctResult :: [[Int]]
+correctResult = [[2, 3, 1, 4],
+                 [1, 4, 3, 2],
+                 [4, 1, 2, 3],
+                 [3, 2, 4, 1]]
 
-myMatrix2 = [[1, 2, 3, 4], 
-            [5, 6, 7, 8], 
-            [0, 0, 0, 0], 
-            [0, 0, 0, 0]] 
+operatorMatrix :: OperatorMatrix
+operatorMatrix = [['<', '|', '<', '|'],
+                  ['v', '^', '^', 'v'],
+                  ['<', '|', '>', '|'],
+                  ['|', '|', '|', '|'],
+                  ['>', '|', '<', '|'],
+                  ['v', '^', '^', 'v'],
+                  ['>', '|', '>', '|']]
 
-myMatrixOperator = [['<', '|', '>', '|'],  -- 0 2 deveria ser <
-                    ['v', '^', '^', 'v'], 
-                    ['<', '|', '>', '|'], 
-                    ['|', '|', '|', '|'], 
-                    ['>', '|', '<', '|'], 
-                    ['v', '^', '^', 'v'], 
-                    ['>', '|', '>', '|']]
+-- markingsMatrix :: MarkingsMatrix
+-- markingsMatrix = fillNewMatrix 4 4 False
 
-try = [[1,2,4,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+-- numbersMatrix :: [[Int]]
+-- numbersMatrix = fillNewMatrix 4 4 0
 
+numbersMatrix :: [[Int]]
+numbersMatrix = [[0, 0, 1, 0],
+                 [1, 0, 0, 0],
+                 [0, 1, 0, 1],
+                 [0, 0, 0, 0]]
+
+markingsMatrix :: [[Bool]]
+markingsMatrix = [[False, False, True, False],
+                 [True, False, False, False],
+                 [False, True, False, False],
+                 [False, False, False, False]]
+
+main :: IO ()
 main = do
-    
-    print (validateright 1 0 try myMatrixOperator)
-    print (validateleft  1 0 try myMatrixOperator)
-    print (validatedown  1 0 try myMatrixOperator)
-    print (validateup    1 0 try myMatrixOperator)
-    printMatrix (solveLine 0 2 4 try myMatrixOperator)
-    printMatrix (solveMatrix myMatrixOperator)
-    -- let myMatrix2 = fillNewMatrix 7 5 False
-    -- printMarkingsMatrix myMatrix2
-    -- let myMatrix3 = markMatrix 2 2 myMatrix2
-    -- let myMatrix4 = markMatrix 2 4 myMatrix3
-    -- let myMatrix5 = markMatrix 0 2 myMatrix4
-    -- let myMatrix6 = markMatrix 3 4 myMatrix5
-    -- let myMatrix7 = markMatrix 0 1 myMatrix6
-    -- printMarkingsMatrix myMatrix7
-    -- printMarkingsMatrix(clearRowAndColumn 2 2 myMatrix7)
-    -- print (fillNewArray 6 True)
+
+    -- let matrixOrder = getNColumnsMatrix numbersMatrix
+    -- let markingsMatrix = fillNewMatrix matrixOrder matrixOrder False
+    putStrLn " "
+    -- let markedMatrix = markAllElements operatorMatrix 0 0 markingsMatrix
+    -- printMatrix markedMatrix
+
+    let (newNumbersMatrix, [numberRowIndex, numberColumnIndex]) = setDefinitiveNumber markingsMatrix numbersMatrix 1
+    if numberRowIndex < 0 then do
+        putStrLn "cabo"
+        printMatrix newNumbersMatrix
+    else do
+        printMatrix newNumbersMatrix
+        
+
+
