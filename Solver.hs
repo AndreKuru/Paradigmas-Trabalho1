@@ -158,7 +158,7 @@ solveElement row column value matrixNumber matrixOperator =
 -- Linha selecionada -> Coluna inicial a ser chutada -> value -> Matriz de números -> Matriz de operadores -> Matriz resposta
 solveLine :: Int -> Int -> Int -> [[Int]] -> [[Char]] -> [[Int]]
 solveLine row column value matrixNumber matrixOperator = 
-  if (row >= 4) then           -- Verifica se já chegou ao final da linha
+  if (row >= (getMaxValue matrixOperator)) then           -- Verifica se já chegou ao final da linha
     matrixNumber
   else if (column >= (getMaxValue matrixOperator)) then   -- Verifica se já chegou ao final da linha
     solveLine (row + 1) 0 1 matrixNumber matrixOperator
