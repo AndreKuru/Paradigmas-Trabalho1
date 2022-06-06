@@ -8,7 +8,12 @@ myMatrix = [[2, 3, 1, 4],
             [4, 1, 2, 3], 
             [3, 2, 4, 1]] 
 
-myMatrixOperator = [['<', '|', '<', '|'], 
+myMatrix2 = [[1, 2, 3, 4], 
+            [5, 6, 7, 8], 
+            [0, 0, 0, 0], 
+            [0, 0, 0, 0]] 
+
+myMatrixOperator = [['<', '|', '>', '|'],  -- 0 2 deveria ser <
                     ['v', '^', '^', 'v'], 
                     ['<', '|', '>', '|'], 
                     ['|', '|', '|', '|'], 
@@ -16,9 +21,15 @@ myMatrixOperator = [['<', '|', '<', '|'],
                     ['v', '^', '^', 'v'], 
                     ['>', '|', '>', '|']]
 
+try = [[1,2,3,0],[0,0,0,0],[0,0,0,0],[0,0,0,-5]]
+
 main = do
     
-    print (solveMatrix myMatrixOperator)
+    print (validateright 1 0 try myMatrixOperator)
+    print (validateleft  1 0 try myMatrixOperator)
+    print (validatedown  1 0 try myMatrixOperator)
+    print (validateup    1 0 try myMatrixOperator)
+    printMatrix (solveMatrix myMatrixOperator)
     -- let myMatrix2 = fillNewMatrix 7 5 False
     -- printMarkingsMatrix myMatrix2
     -- let myMatrix3 = markMatrix 2 2 myMatrix2

@@ -84,11 +84,12 @@ getMatrixColumn n (a:b) =
         []
 
 -- no tabuleiro, todos os números válidos são positivos
--- *Retorna elemento da matriz: linha do elemento -> coluna do elemento -> Matriz -> elemento
+-- *Retorna elemento da matriz:
+-- linha do elemento -> coluna do elemento -> Matriz -> elemento
 getMatrixElement :: Int -> Int -> Matrix -> Int
 getMatrixElement _ _ [] = - 1
 getMatrixElement row column matrix =
-    if column >= 0 && column + 1 < getNColumnsMatrix matrix then
+    if (column >= 0) && (column < (getNColumnsMatrix matrix)) then
         getMatrixRow row matrix!!column
     else
         (-1)
