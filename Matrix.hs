@@ -14,11 +14,9 @@ type Matrix = [Array]
 fillNewMatrix :: Int -> Int -> t -> [[t]]
 fillNewMatrix 0 _ _ = []
 fillNewMatrix _ 0 _ = []
-fillNewMatrix 1 n value = [fillNewArray n value]
-fillNewMatrix n 1 value = [[value]] ++ fillNewMatrix j 1 value
-    where j = n-1
-fillNewMatrix n m value = [fillNewArray m value] ++ fillNewMatrix j m value
-    where j = n-1
+fillNewMatrix 1 numColumns value = [fillNewArray numColumns value]
+fillNewMatrix numRows 1 value = [[value]] ++ fillNewMatrix (numRows-1) 1 value
+fillNewMatrix numRows numColumns value = [fillNewArray numColumns value] ++ fillNewMatrix (numRows-1) numColumns value
 
 -- *Preenche um array com um determinado valor: 
 -- tamanho -> valor para preencher -> array preenchido
@@ -54,6 +52,28 @@ setArrayElement index value array =
     else
         splitArray 0 index array ++ [value] ++ splitArray (index+1) arrayLength array
     where arrayLength = getArrayLength array
+
+containsElement :: (Eq t) => t -> [t] -> Bool
+containsElement _ [] = False
+containsElement element (a:b) = (a == element) || containsElement element b
+
+countElementOcurrences :: (Eq t) => t -> [t] -> Int
+countElementOcurrences _ [] = 0
+countElementOcurrences element (a:b) | a == element = 1 + countElementOcurrences element b
+                                     | otherwise = 0 + countElementOcurrences element b
+
+containsOneElement :: (Eq t) => t -> [t] -> Bool
+containsOneElement _ [] = False
+containsOneElement element array =
+    countElementOcurrences element array == 1
+
+getElementIndex :: (Eq t) => t -> [t] -> Int
+getElementIndex _ [] = 0
+getElementIndex element (a:b) =
+    if containsElement element [a] then
+        0
+    else
+        1 + getElementIndex element b
 
 -- *Retorna a quantidade de linhas da matriz: matriz -> quantidade de linhas
 getNRowsMatrix :: [[t]] -> Int
@@ -140,16 +160,31 @@ setMatrixElement row column value matrix = do
     let newRow = setArrayElement column value line
     setMatrixRow row newRow matrix
 
--- Talvez devesse ser feito em uma classe, não sei
+getRowIndexThatContains :: (Eq t) => t -> [[t]] -> Int
+getRowIndexThatContains _ [] = 0
+getRowIndexThatContains element (a:b) =
+    if containsElement element a then
+        0
+    else
+        1 + getRowIndexThatContains element b
+
+getElementIndexMatrix :: (Eq t) => t -> [[t]] -> [Int]
+getElementIndexMatrix _ [] = [-1,-1]
+getElementIndexMatrix element matrix = do
+    let rowIndex = getRowIndexThatContains element matrix
+    if rowIndex > 0 && rowIndex < getNRowsMatrix matrix then
+        [rowIndex, getElementIndex element (matrix!!rowIndex)]
+    else
+        [-1,-1]
+    
 -- *Imprime a matriz: matriz a ser impressa -> IO
-printMatrix :: Matrix -> IO ()
+printMatrix :: (Show t) => [[t]] -> IO ()
 printMatrix [] = putStrLn []
 printMatrix (a:b) = do
     putStrLn(arrayString a)
     printMatrix b
 
--- Útil para a impressão
 -- Transforma um array em uma linha 
-arrayString :: Array -> String
+arrayString :: (Show t) => [t] -> String
 arrayString [] = []
 arrayString (a:b) = show a ++ " " ++ arrayString b
