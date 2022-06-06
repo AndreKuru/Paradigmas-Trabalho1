@@ -12,16 +12,13 @@ type Matrix = [Array]
 fillNewMatrix :: Int -> Int -> t -> [[t]]
 fillNewMatrix 0 _ _ = []
 fillNewMatrix _ 0 _ = []
-fillNewMatrix 1 n value = [fillNewArray n value]
-fillNewMatrix n 1 value = [[value]] ++ fillNewMatrix j 1 value
-    where j = n-1
-fillNewMatrix n m value = [fillNewArray m value] ++ fillNewMatrix j m value
-    where j = n-1
+fillNewMatrix 1 numColumns value = [fillNewArray numColumns value]
+fillNewMatrix numRows 1 value = [[value]] ++ fillNewMatrix (numRows-1) 1 value
+fillNewMatrix numRows numColumns value = [fillNewArray numColumns value] ++ fillNewMatrix (numRows-1) numColumns value
 
 fillNewArray :: Int -> t -> [t]
 fillNewArray 0 _ = []
-fillNewArray n value = [value] ++ fillNewArray j value
-    where j = n-1
+fillNewArray size value = [value] ++ fillNewArray (size-1) value
 
 getArrayLength :: [t] -> Int
 getArrayLength [] = 0
@@ -47,6 +44,28 @@ setArrayElement index value array =
     else
         splitArray 0 index array ++ [value] ++ splitArray (index+1) arrayLength array
     where arrayLength = getArrayLength array
+
+containsElement :: (Eq t) => t -> [t] -> Bool
+containsElement _ [] = False
+containsElement element (a:b) = (a == element) || containsElement element b
+
+countElementOcurrences :: (Eq t) => t -> [t] -> Int
+countElementOcurrences _ [] = 0
+countElementOcurrences element (a:b) | a == element = 1 + countElementOcurrences element b
+                                     | otherwise = 0 + countElementOcurrences element b
+
+containsOneElement :: (Eq t) => t -> [t] -> Bool
+containsOneElement _ [] = False
+containsOneElement element array =
+    countElementOcurrences element array == 1
+
+getElementIndex :: (Eq t) => t -> [t] -> Int
+getElementIndex _ [] = 0
+getElementIndex element (a:b) =
+    if containsElement element [a] then
+        0
+    else
+        1 + getElementIndex element b
 
 getNRowsMatrix :: [[t]] -> Int
 getNRowsMatrix [] = 0
@@ -114,17 +133,30 @@ setMatrixElement row column value matrix = do
     let newRow = setArrayElement column value line
     setMatrixRow row newRow matrix
 
+getRowIndexThatContains :: (Eq t) => t -> [[t]] -> Int
+getRowIndexThatContains _ [] = 0
+getRowIndexThatContains element (a:b) =
+    if containsElement element a then
+        0
+    else
+        1 + getRowIndexThatContains element b
+
+getElementIndexMatrix :: (Eq t) => t -> [[t]] -> [Int]
+getElementIndexMatrix _ [] = [-1,-1]
+getElementIndexMatrix element matrix = do
+    let rowIndex = getRowIndexThatContains element matrix
+    if rowIndex > 0 && rowIndex < getNRowsMatrix matrix then
+        [rowIndex, getElementIndex element (matrix!!rowIndex)]
+    else
+        [-1,-1]
+    
 -- Talvez devesse ser feito em uma classe, não sei
-printMatrix :: Matrix -> IO ()
+printMatrix :: (Show t) => [[t]] -> IO ()
 printMatrix [] = putStrLn []
 printMatrix (a:b) = do
     putStrLn(arrayString a)
     printMatrix b
 
-matrixString :: Matrix -> String
-matrixString [] = []
-matrixString (a:b) = arrayString a ++ matrixString b
-
-arrayString :: Array -> String
+arrayString :: (Show t) => [t] -> String
 arrayString [] = []
 arrayString (a:b) = show a ++ " " ++ arrayString b
