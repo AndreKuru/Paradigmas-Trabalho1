@@ -183,7 +183,7 @@ solveLine row column value matrixNumber matrixOperator =
 --       
 -- 
   where try =       (solveElement row column value matrixNumber matrixOperator)           -- Dá um chute num elemento da linha
-        tryAgain  = (solveElement row column (lastValue + 1) try matrixOperator) -- Dá um novo chute num elemento da linha
+        tryAgain  = (solveLine row column (lastValue + 1) try matrixOperator) -- Dá um novo chute num elemento da linha
         lastValue = (getMatrixElement row column try)                            -- Valor do último chute
         nextTry   = (solveLine row (column + 1) 1 try matrixOperator)                    -- Chuta o próximo elemento
 

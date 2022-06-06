@@ -13,7 +13,7 @@ myMatrix2 = [[1, 2, 3, 4],
             [0, 0, 0, 0], 
             [0, 0, 0, 0]] 
 
-myMatrixOperator = [['<', '|', '>', '|'],  -- 0 2 deveria ser <
+myMatrixOperator = [['>', '|', '>', '|'],  -- 0 2 deveria ser <
                     ['v', '^', '^', 'v'], 
                     ['<', '|', '>', '|'], 
                     ['|', '|', '|', '|'], 
@@ -21,7 +21,7 @@ myMatrixOperator = [['<', '|', '>', '|'],  -- 0 2 deveria ser <
                     ['v', '^', '^', 'v'], 
                     ['>', '|', '>', '|']]
 
-try = [[1,2,4,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+try = [[1,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
 
 main = do
     
@@ -29,7 +29,7 @@ main = do
     print (validateleft  1 0 try myMatrixOperator)
     print (validatedown  1 0 try myMatrixOperator)
     print (validateup    1 0 try myMatrixOperator)
-    printMatrix (solveLine 0 2 4 try myMatrixOperator)
+    printMatrix (solveLine 0 0 2 try myMatrixOperator)
     printMatrix (solveMatrix myMatrixOperator)
     -- let myMatrix2 = fillNewMatrix 7 5 False
     -- printMarkingsMatrix myMatrix2
