@@ -90,7 +90,7 @@ validateleft row column matrixNumber matrixOperator =
 -- linha -> coluna -> matriz de números -> matriz de operadores -> mantem coerência?
 validatedown :: Int -> Int -> [[Int]] -> [[Char]] -> Bool
 validatedown row column matrixNumber matrixOperator = 
-  (row == (getNRowsMatrix matrixNumber)) ||
+  (row == ((getNRowsMatrix matrixNumber) - 1)) ||
   (validateoperation 
     (getMatrixElement row column matrixNumber)
     (checkdown row column matrixOperator)
@@ -158,15 +158,17 @@ solveElement row column value matrixNumber matrixOperator =
 -- Linha selecionada -> Coluna inicial a ser chutada -> value -> Matriz de números -> Matriz de operadores -> Matriz resposta
 solveLine :: Int -> Int -> Int -> [[Int]] -> [[Char]] -> [[Int]]
 solveLine row column value matrixNumber matrixOperator = 
-  if (column >= (getMaxValue matrixOperator)) then  -- Verifica se já chegou ao final da linha
-    matrixNumber                                    -- Se sim retorna a linha como está
-  else if (validateTry1 try) then                   -- Verifica se tem um chute válido
-    if (validateTry2 nextTry) then                  -- Se sim verifica se o chute do próximo elemento é válido
-      nextTry                                       --        Se sim retorna o chute dos próximos
-    else                                            --
-      tryAgain                                      --        Se não tenta um novo chute no elemento atual a partir do último elemento do mesmo
-  else                                              --
-    (setMatrixElement 3 2 (-2) try)  --test         -- Se não tem um chute válido retorna a exceção -2
+  if (row >= 4) then           -- Verifica se já chegou ao final da linha
+    matrixNumber
+  else if (column >= (getMaxValue matrixOperator)) then   -- Verifica se já chegou ao final da linha
+    solveLine (row + 1) 0 1 matrixNumber matrixOperator
+  else if (validateTry1 try) then                         -- Verifica se tem um chute válido
+    if (validateTry2 nextTry) then                        -- Se sim verifica se o chute do próximo elemento é válido
+      nextTry                                             --        Se sim retorna o chute dos próximos
+    else                                                  
+      tryAgain                                            --        Se não tenta um novo chute no elemento atual a partir do último elemento do mesmo
+  else                                                    
+    (setMatrixElement 3 2 (-2) try)  --test               -- Se não tem um chute válido retorna a exceção -2
 
 --   if (value /= 1) then                 -- test begin
 --     (setMatrixElement 3 0 2 (setMatrixElement 3 3 (-5) try))
@@ -189,8 +191,17 @@ solveLine row column value matrixNumber matrixOperator =
 
 -- Tenta todas as linhas de uma determinada matriz a partir da linha informada:
 -- Linha inicial -> Matriz de números -> Matriz de operadores -> Matriz resposta
-solveLines :: Int -> [[Int]] -> [[Char]] -> [[Int]]
-solveLines row matrixNumber matrixOperator =  try
+-- solveLines :: Int -> [[Int]] -> [[Char]] -> [[Int]]
+-- solveLines row matrixNumber matrixOperator =  try
+  -- if (row >= (getMaxValue matrixOperator)) then
+  --   matrixNumber
+  -- else if (validateTry2 try) then
+  --   if (validateTry3 nextTry) then
+  --     nextTry
+  --   else
+  --     tryAgain
+
+
 --  if
 --  (row >= (getMaxValue matrixOperator)) then                                  -- Verifica se existe mais linhas para chutar
 --    matrixNumber
@@ -206,7 +217,7 @@ solveLines row matrixNumber matrixOperator =  try
 --    -- [[-3]]                                                                 -- Se não retorna exceção
 --    (setMatrixElement 3 1 (-3) try)  --test
 --                                                                               
-  where try = (solveLine row 0 1 matrixNumber matrixOperator)                 --  Tenta solucionar a linha informada desde o primeiro elemento
+--  where try = (solveLine row 0 1 matrixNumber matrixOperator)                 --  Tenta solucionar a linha informada desde o primeiro elemento
 
 -- Cria uma matriz zerada de ordem N:
 -- N --> Matriz de números zerada
@@ -217,8 +228,10 @@ createMatrixNumber n = fillNewMatrix n n 0
 -- Matriz de operadores -> Matriz de números
 solveMatrix :: [[Char]] -> [[Int]]
 solveMatrix matrixOperator = 
-  (solveLines 
+  (solveLine
     0
+    0
+    1
     matrixNumber
     matrixOperator
   )
