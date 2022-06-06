@@ -10,6 +10,7 @@ import Matrix
 type MarkingsArray = [Bool]
 type MarkingsMatrix = [MarkingsArray]
 
+
 -- insere ordem da matriz para descobrir tamanho das "caixas" de comparadores
 boxWidth :: Int -> Int
 boxWidth n | n == 4 = 2

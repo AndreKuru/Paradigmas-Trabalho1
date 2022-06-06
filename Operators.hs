@@ -6,13 +6,15 @@ type Matrix = [Array]
 
 createEmptyArray :: Int -> Array
 createEmptyArray 0 = []
-createEmptyArray n = [""] ++ createEmptyArray (n-1)
+createEmptyArray n = [''] ++ createEmptyArray (n-1)
+
 
 createEmptyMatrix :: Int -> Int -> Matrix
 createEmptyMatrix 0 _ = []
 createEmptyMatrix _ 0 = []
 createEmptyMatrix 1 n = [createEmptyArray n]
-createEmptyMatrix n 1 = [''] ++ createEmptyMatrix (n-1) 1
+createEmptyMatrix n 1 = [['']] ++ createEmptyMatrix (n-1) 1
+
 createEmptyMatrix n m = [createEmptyArray m] ++ createEmptyMatrix (n-1) m
 
 getArrayLength :: Array -> Int
