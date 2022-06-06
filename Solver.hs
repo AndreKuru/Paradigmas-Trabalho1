@@ -130,12 +130,15 @@ validatenumber row column matrixNumber matrixOperator =
 getMaxValue :: [[Char]] -> Int
 getMaxValue matrixOperator = (div (getNRowsMatrix matrixOperator) 2) + 1
 
+-- Verifica se a matriz sofreu uma exceção do tipo 1, ou seja, em solveElement
 validateTry1 :: [[Int]] -> Bool
 validateTry1 matrix = (getMatrixElement 3 3 matrix) /= (-1)
 
+-- Verifica se a matriz sofreu uma exceção do tipo 2, ou seja, em solveLine
 validateTry2 :: [[Int]] -> Bool
 validateTry2 matrix = (getMatrixElement 3 2 matrix) /= (-2)
 
+-- Verifica se a matriz sofreu uma exceção do tipo 3, ou seja, em solveLines
 validateTry3 :: [[Int]] -> Bool
 validateTry3 matrix = (getMatrixElement 3 1 matrix) /= (-3)
 
