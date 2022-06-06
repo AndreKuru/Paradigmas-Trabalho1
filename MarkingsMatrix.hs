@@ -11,21 +11,26 @@ type MarkingsArray = [Bool]
 type MarkingsMatrix = [MarkingsArray]
 
 
--- insere ordem da matriz para descobrir tamanho das "caixas" de comparadores
+-- insere ordem da matriz para descobrir a largura das "caixas" ou regiões de comparadores
+-- Ordem da matriz -> largura da região
 boxWidth :: Int -> Int
 boxWidth n | n == 4 = 2
            | n == 6 = 2
            | n == 9 = 3
            | otherwise = 0
 
-
+-- insere ordem da matriz para descobrir a altura das "caixas" ou regiões de comparadores
+-- Ordem da matriz -> altura da região
 boxHeight :: Int -> Int
 boxHeight n | n == 4 = 2
             | n == 6 = 3
             | n == 9 = 3
             | otherwise = 0
 
--- a partir daqui até antes de boxesAsRows é tudo função auxiliar
+-- A partir daqui é tudo função auxiliar
+-- Funções auxiliares - começo ************************
+-- Transforma uma linha em segmentos de caixa:
+-- largura da caixa -> quantidade de caixas por linha -> linha -> lista de segmentos
 splitRowPerBoxes :: Int -> Int -> [t] -> [[t]]
 splitRowPerBoxes _ 0 _ = []
 splitRowPerBoxes 0 _ row = []
@@ -37,6 +42,8 @@ splitRowPerBoxes boxWidth boxesPerRow row =
           boxAmount = boxesPerRow-1
           rowLength = getArrayLength row
 
+-- Transforma a matriz em segmentos de caixa:
+-- largura da caixa -> quantidade de caixas por linha -> matriz -> lista de segmentos
 splitMatrixPerBoxesPerLine :: Int -> Int -> [[t]] -> [[t]]
 splitMatrixPerBoxesPerLine _ 0 _ = []
 splitMatrixPerBoxesPerLine 0 _ _ = []
@@ -44,6 +51,8 @@ splitMatrixPerBoxesPerLine _ _ [] = []
 splitMatrixPerBoxesPerLine boxWidth boxesPerRow (a:b) =
     splitRowPerBoxes boxWidth boxesPerRow a ++ splitMatrixPerBoxesPerLine boxWidth boxesPerRow b
 
+-- Reordena os segmentos de caixa por caixa:
+-- caixas por linha -> ordem da matriz -> lista de segmentos de caixa
 mapColumns :: Int -> Int -> [[t]] -> [[t]]
 mapColumns 0 _ _ = []
 mapColumns _ 0 _ = []
@@ -85,9 +94,12 @@ concatBoxSegments segments boxHeight =
     where newRow = splitMatrixLines boxHeight numberOfSegments segments
           numberOfSegments = getNRowsMatrix segments
 
--- faz com que cada linha seja equivalente a uma caixa
+-- Funções auxiliares - final ************************
+
+-- Faz com que cada linha seja equivalente a uma caixa
 -- assume que a matriz é quadrada
 -- se eu pôr que recebe MarkingsMatrix não compila e não sei arrumar agora :v
+-- Matriz de marcação -> Lista de caixas unidimensionais
 boxesAsRows :: [[t]] -> [[t]]
 boxesAsRows matrix = do
     let matrixOrder = getNColumnsMatrix matrix
@@ -100,7 +112,8 @@ boxesAsRows matrix = do
     let boxesPerColumn = div matrixOrder boxheight
     mapColumns boxesPerColumn matrixOrder concatBoxes
 
--- converte index da matriz de caixas como colunas para index da matrix original
+-- Converte index da matriz de caixas como colunas para index da matrix original
+-- [index da caixa, index dentro da caixa] -> ordem da matriz -> [linha, coluna]
 getCorrectIndex :: [Int] -> Int -> [Int]
 getCorrectIndex [] _ = []
 getCorrectIndex _ 0 = []
@@ -111,6 +124,8 @@ getCorrectIndex (a:b) matrixOrder = do
     let boxesIndexMatrix = boxesAsRows(boxesAsRows markedIndexMatrix)
     getElementIndexMatrix True boxesIndexMatrix
 
+-- Marca a matriz na posição:
+-- linha -> coluna -> Matriz de marcação -> Matriz de marcação marcada
 markMatrix :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markMatrix row column = setMatrixElement row column True
 
@@ -129,8 +144,8 @@ getBoxIndex (a:b) =
     else
         1 + getBoxIndex b
 
--- checa todas as caixas por 1 True e retorna index da caixa e da marcação
--- operações extremamente redundantes
+-- Caixa já estando como linha
+-- Checa todas as caixas por 1 True e retorna [index da caixa, index da marcação na caixa]
 getCorrectMarkingIndex :: [[Bool]] -> [Int]
 getCorrectMarkingIndex [] = [-1,-1]
 getCorrectMarkingIndex boxes = do
@@ -140,16 +155,15 @@ getCorrectMarkingIndex boxes = do
     else
         [-1, -1]
 
--- TODO: funçao de checar todas as caixas por 1 único true a partir de uma matriz de marcações normal
+-- Funçao de checar todas as caixas por 1 único true a partir de uma matriz de marcações normal
 -- e retornar o index da marcação pra pôr o número na matriz de números
--- (chamar boxesAsRows dentro da função)
-checkAllBoxes :: MarkingsMatrix -> [Int]
 checkAllBoxes matrix = do
     let boxRows = boxesAsRows matrix
     getCorrectMarkingIndex boxRows
 
 -- quando é oficialmente anotado o menor número de alguma caixa, é preciso
--- limpar as marcações da linha e coluna do elemento
+-- linha -> coluna -> matriz de marcação -> matriz de marcação com linha e coluna sem "True"
+-- linha -> coluna -> matriz de marcação -> matriz de marcação com linha e coluna sem "True"
 clearRowAndColumn :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 clearRowAndColumn _ _ [] = []
 clearRowAndColumn row column matrix = do
