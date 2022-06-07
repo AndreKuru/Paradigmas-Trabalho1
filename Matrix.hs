@@ -180,7 +180,7 @@ getElementIndexMatrix element matrix = do
         (rowIndex, getElementIndex element (matrix!!rowIndex))
     else
         (-1,-1)
-    
+
 -- *Imprime a matriz: matriz a ser impressa -> IO
 printMatrix :: (Show t) => [[t]] -> IO ()
 printMatrix [] = putStrLn []

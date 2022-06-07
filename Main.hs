@@ -4,28 +4,19 @@ import PuzzleSolver
 import Backtracker
 
 correctResult :: [[Int]]
-correctResult = [[2, 3, 1, 4],
-                 [1, 4, 3, 2],
-                 [4, 1, 2, 3],
-                 [3, 2, 4, 1]]
+correctResult = [[1, 2, 4, 3],
+                 [4, 3, 1, 2],
+                 [3, 4, 2, 1],
+                 [2, 1, 3, 4]]
 
-operatorMatrix0 :: OperatorMatrix
-operatorMatrix0 = [['<', '|', '<', '|'],
-                  ['v', '^', '^', 'v'],
-                  ['<', '|', '>', '|'],
-                  ['|', '|', '|', '|'],
+operatorMatrix :: OperatorMatrix
+operatorMatrix = [['<', '|', '>', '|'],
+                  ['^', '^', 'v', 'v'],
                   ['>', '|', '<', '|'],
-                  ['v', '^', '^', 'v'],
-                  ['>', '|', '>', '|']]
-
-operatorMatrix1 :: OperatorMatrix
-operatorMatrix1 = [['<', '|', '<', '|'],
-                  ['v', '^', '^', 'v'],
-                  ['<', '|', '>', '|'],
                   ['|', '|', '|', '|'],
-                  ['>', '|', '<', '|'],
-                  ['v', '^', '^', 'v'],
-                  ['>', '|', '>', '|']]
+                  ['<', '|', '>', '|'],
+                  ['v', 'v', '^', '^'],
+                  ['>', '|', '<', '|']]
 
 -- markingsMatrix :: MarkingsMatrix
 -- markingsMatrix = fillNewMatrix 4 4 False
@@ -102,18 +93,22 @@ main = do
     -- -- let (clearedOperatorMatrix, clearedMarkingsMatrix) = clearOperatorsAndMarkings (numberRowIndex, numberColumnIndex) operatorMatrix markingsMatrix
     -- printMatrix clearedOperatorMatrix
     -- printMatrix clearedMarkingsMatrix
-    let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix 1
-    printMatrix newNumbersMatrix
-    printMatrix newOperatorMatrix
-    let (newNumbersMatrix2, newOperatorMatrix2)= setAllSmallerNumbers newNumbersMatrix newOperatorMatrix 2
-    printMatrix newNumbersMatrix2
-    printMatrix newOperatorMatrix2
-    let (newNumbersMatrix3, newOperatorMatrix3)= setAllSmallerNumbers newNumbersMatrix2 newOperatorMatrix2 3
-    printMatrix newNumbersMatrix3
-    printMatrix newOperatorMatrix3
-    let (newNumbersMatrix4, newOperatorMatrix4)= setAllSmallerNumbers newNumbersMatrix4 newOperatorMatrix4 4
-    printMatrix newNumbersMatrix4
-    printMatrix newOperatorMatrix4
+
+    --printMatrix(fillZerosWithBiggestNumber numbersMatrix)
+    printMatrix(setAllNumbers numbersMatrix operatorMatrix 1)
+
+    -- let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix 1
+    -- printMatrix newNumbersMatrix
+    -- printMatrix newOperatorMatrix
+    -- let (newNumbersMatrix2, newOperatorMatrix2)= setAllSmallerNumbers newNumbersMatrix newOperatorMatrix 2
+    -- printMatrix newNumbersMatrix2
+    -- printMatrix newOperatorMatrix2
+    -- let (newNumbersMatrix3, newOperatorMatrix3)= setAllSmallerNumbers newNumbersMatrix2 newOperatorMatrix2 3
+    -- printMatrix newNumbersMatrix3
+    -- printMatrix newOperatorMatrix3
+    -- let (newNumbersMatrix4, newOperatorMatrix4)= setAllSmallerNumbers newNumbersMatrix3 newOperatorMatrix3 4
+    -- printMatrix newNumbersMatrix4
+    -- printMatrix newOperatorMatrix4
 
         
 

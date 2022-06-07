@@ -132,11 +132,23 @@ setAllSmallerNumbers2 markingsMatrix numbersMatrix operatorMatrix numberToSet = 
 
 
 setAllNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
-setAllNumbers numbersMatrix operatorMatrix numberToSet =
-    if numberToSet > getNColumnsMatrix numbersMatrix then
+setAllNumbers numbersMatrix operatorMatrix numberToSet = do
+    let matrixOrder = getNColumnsMatrix numbersMatrix
+    if numberToSet > matrixOrder then
         numbersMatrix
+    else if operatorMatrix == fillNewMatrix (2 * matrixOrder - 1) matrixOrder '|' then
+        fillZerosWithBiggestNumber numbersMatrix
     else do
         let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix numberToSet
         setAllNumbers newNumbersMatrix newOperatorMatrix (numberToSet+1)
         
-
+fillZerosWithBiggestNumber :: NumbersMatrix -> NumbersMatrix
+fillZerosWithBiggestNumber [] = []
+fillZerosWithBiggestNumber numbersMatrix = do
+    let matrixOrder = getNColumnsMatrix numbersMatrix
+    let (zeroIndexRow, zeroIndexColumn) = getElementIndexMatrix 0 numbersMatrix
+    if zeroIndexRow >= 0 && zeroIndexRow < matrixOrder && zeroIndexColumn >= 0 && zeroIndexColumn < matrixOrder then do
+        let newNumbersMatrix = setMatrixElement zeroIndexRow zeroIndexColumn matrixOrder numbersMatrix
+        fillZerosWithBiggestNumber newNumbersMatrix
+    else
+        numbersMatrix
