@@ -59,6 +59,10 @@ containsElement :: (Eq t) => t -> [t] -> Bool
 containsElement _ [] = False
 containsElement element (a:b) = (a == element) || containsElement element b
 
+matrixContainsElement :: (Eq t) => t -> [[t]] -> Bool
+matrixContainsElement _ [] = False
+matrixContainsElement element (a:b) = containsElement element a || matrixContainsElement element b
+
 countElementOcurrences :: (Eq t) => t -> [t] -> Int
 countElementOcurrences _ [] = 0
 countElementOcurrences element (a:b) | a == element = 1 + countElementOcurrences element b
@@ -99,7 +103,7 @@ getNColumnsMatrix (a:b) = getArrayLength a
 getMatrixColumn :: Int -> [[t]] -> [t]
 getMatrixColumn _ [] = []
 getMatrixColumn n (a:b) =
-    if n >= 0 && n + 1 < getNColumnsMatrix (a:b) then
+    if n >= 0 && n < getNColumnsMatrix (a:b) then
         [a!!n] ++ getMatrixColumn n b
     else
         []

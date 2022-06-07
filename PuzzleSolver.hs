@@ -170,8 +170,8 @@ setAllNumbersFromIteration markingsMatrix numbersMatrix operatorMatrix numberToS
                 clearOperatorsAndMarkings (numberRowIndex, numberColumnIndex) operatorMatrix markingsMatrix
         setAllNumbersFromIteration clearedMarkingsMatrix newNumbersMatrix clearedOperatorMatrix numberToSet
 
-setAllNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
-setAllNumbers numbersMatrix operatorMatrix numberToSet = do
+setAllNumbersStartingFromSmallest :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
+setAllNumbersStartingFromSmallest numbersMatrix operatorMatrix numberToSet = do
     let matrixOrder = getNColumnsMatrix numbersMatrix
     if numberToSet > matrixOrder then
         numbersMatrix
@@ -185,7 +185,7 @@ setAllNumbers numbersMatrix operatorMatrix numberToSet = do
         if newNumbersMatrix == numbersMatrix then
             numbersMatrix
         else
-            setAllNumbers newNumbersMatrix newOperatorMatrix (numberToSet+1)
+            setAllNumbersStartingFromSmallest newNumbersMatrix newOperatorMatrix (numberToSet+1)
 
 setAllNumbersStartingFromBiggest :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
 setAllNumbersStartingFromBiggest numbersMatrix operatorMatrix numberToSet = do
@@ -224,3 +224,22 @@ getOperatorMatrixFromNumbersMatrix row column numbersMatrix completeOperatorMatr
         getOperatorMatrixFromNumbersMatrix row (column+1) numbersMatrix clearedOperatorMatrix
     else
         getOperatorMatrixFromNumbersMatrix row (column+1) numbersMatrix completeOperatorMatrix
+
+-- Soluciona o tabuleiro de acordo com a matriz de operadores
+-- Por enquanto só parece funcionar 100% para tabuleiros 4x4
+-- Caso contrário, tende a repetir alguns números, seja na mesma região, linha ou coluna, ou faltarem números
+solvePuzzle :: OperatorMatrix -> NumbersMatrix
+solvePuzzle [] = []
+solvePuzzle operatorMatrix = do
+    let matrixOrder = getNColumnsMatrix operatorMatrix
+    let emptyNumbersMatrix = fillNewMatrix matrixOrder matrixOrder 0
+    let numbersMatrixWithSmallerNumbers = setAllNumbersStartingFromSmallest emptyNumbersMatrix operatorMatrix 1
+    if matrixContainsElement 0 numbersMatrixWithSmallerNumbers then do
+        let updatedOperatorMatrix = getOperatorMatrixFromNumbersMatrix 0 0 numbersMatrixWithSmallerNumbers operatorMatrix
+        if updatedOperatorMatrix == fillNewMatrix (2 * matrixOrder - 1) matrixOrder '|' then
+            setAllNumbersStartingFromBiggest numbersMatrixWithSmallerNumbers operatorMatrix matrixOrder
+        else
+
+            setAllNumbersStartingFromBiggest numbersMatrixWithSmallerNumbers updatedOperatorMatrix matrixOrder
+    else
+        numbersMatrixWithSmallerNumbers

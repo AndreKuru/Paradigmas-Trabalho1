@@ -163,6 +163,24 @@ checkAllBoxes matrix = do
     let boxRows = boxesAsRows matrix
     getCorrectMarkingIndex boxRows
 
+-- Percorre a matriz de marcação por alguma marcação que seja única em sua linha e coluna
+checkAllMarkings :: MarkingsMatrix -> Int -> (Int, Int)
+checkAllMarkings matrix rowIndex | rowIndex >= getNRowsMatrix matrix = (-1,-1)
+checkAllMarkings matrix rowIndex = do
+    let row = getMatrixRow rowIndex matrix
+    let result = containsOneElement True row
+    if result then do
+        let markingColumn = getElementIndex True row
+        let column = getMatrixColumn markingColumn matrix
+        let result2 = containsOneElement True column
+        if result2 then
+            (rowIndex, markingColumn)
+        else
+            checkAllMarkings matrix (rowIndex+1)
+    else
+        checkAllMarkings matrix (rowIndex+1)
+
+
 -- quando é oficialmente anotado o menor número de alguma caixa, é preciso
 -- limpar as marcações da linha e coluna do index do número anotado
 -- linha -> coluna -> matriz de marcação -> matriz de marcação com linha e coluna sem "True"
