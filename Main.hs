@@ -18,26 +18,64 @@ import Backtracker
 --                   ['v', 'v', '^', '^'],
 --                   ['>', '|', '<', '|']]
 
-correctResult :: [[Int]] -- esses dois não  resolve
-correctResult = [[2, 3, 1, 4], 
-                [1, 4, 3, 2], 
-                [4, 1, 2, 3], 
-                [3, 2, 4, 1]] 
+correctResult4 :: [[Int]]
+correctResult4 = [[2, 3, 1, 4], 
+                  [1, 4, 3, 2], 
+                  [4, 1, 2, 3], 
+                  [3, 2, 4, 1]] 
 
 
-operatorMatrix = [['<', '|', '<', '|'], 
-                    ['v', '^', '^', 'v'], 
-                    ['<', '|', '>', '|'], 
-                    ['|', '|', '|', '|'], 
-                    ['>', '|', '<', '|'], 
-                    ['v', '^', '^', 'v'], 
-                    ['>', '|', '>', '|']]
+operatorMatrix4 = [['<', '|', '<', '|'], 
+                   ['v', '^', '^', 'v'], 
+                   ['<', '|', '>', '|'], 
+                   ['|', '|', '|', '|'], 
+                   ['>', '|', '<', '|'], 
+                   ['v', '^', '^', 'v'], 
+                   ['>', '|', '>', '|']]
+
+operatorMatrix9 = [
+  ['<', '>', '|', '<', '<', '|', '>', '>', '|'],
+  ['v', '^', '^', 'v', 'v', 'v', '^', 'v', '^'],
+  ['<', '<', '|', '<', '>', '|', '>', '<', '|'],
+  ['^', '^', '^', '^', 'v', 'v', 'v', 'v', 'v'],
+  ['<', '<', '|', '<', '>', '|', '>', '<', '|'],
+  ['|', '|', '|', '|', '|', '|', '|', '|', '|'],
+  ['>', '>', '|', '>', '<', '|', '<', '>', '|'],
+  ['v', '^', '^', 'v', 'v', 'v', '^', 'v', '^'],
+  ['>', '<', '|', '>', '<', '|', '>', '>', '|'],
+  ['v', '^', '^', '^', '^', 'v', 'v', 'v', 'v'],
+  ['<', '>', '|', '<', '>', '|', '>', '<', '|'],
+  ['|', '|', '|', '|', '|', '|', '|', '|', '|'],
+  ['<', '>', '|', '>', '>', '|', '<', '>', '|'],
+  ['v', 'v', 'v', '^', 'v', 'v', '^', '^', '^'],
+  ['>', '<', '|', '>', '<', '|', '<', '<', '|'],
+  ['^', '^', 'v', 'v', 'v', '^', 'v', '^', 'v'],
+  ['<', '>', '|', '<', '<', '|', '<', '>', '|']]
+
+operatorMatrix6 = [
+  ['<', '|', '>', '|', '>', '|'],
+  ['^', 'v', '^', '^', '^', 'v'],
+  ['>', '|', '>', '|', '>', '|'],
+  ['v', 'v', 'v', '^', '^', '^'],
+  ['<', '|', '<', '|', '<', '|'],
+  ['|', '|', '|', '|', '|', '|'],
+  ['<', '|', '<', '|', '<', '|'],
+  ['^', '^', 'v', 'v', '^', 'v'],
+  ['>', '|', '<', '|', '<', '|'],
+  ['v', 'v', '^', '^', '^', 'v'],
+  ['>', '|', '<', '|', '>', '|']]
 
 -- markingsMatrix :: MarkingsMatrix
 -- markingsMatrix = fillNewMatrix 4 4 False
 
-numbersMatrix :: [[Int]]
-numbersMatrix = fillNewMatrix 4 4 0
+numbersMatrix4 :: [[Int]]
+numbersMatrix4 = fillNewMatrix 4 4 0
+
+numbersMatrix6 :: [[Int]]
+numbersMatrix6 = fillNewMatrix 6 6 0
+
+numbersMatrix9 :: [[Int]]
+numbersMatrix9 = fillNewMatrix 9 9 0
 
 -- numbersMatrix :: [[Int]]
 -- numbersMatrix = [[0, 0, 1, 0],
@@ -110,9 +148,14 @@ main = do
     -- printMatrix clearedMarkingsMatrix
 
     --printMatrix(fillZerosWithBiggestNumber numbersMatrix)
-    let huhu= setAllNumbers numbersMatrix operatorMatrix 1
+    let huhu1 = setAllNumbers numbersMatrix6 operatorMatrix6 1
+    let yeye = getOperatorMatrixFromNumbersMatrix 0 0 huhu1 operatorMatrix6
+    -- printMatrix yeye
+    let huhu= setAllNumbersStartingFromBiggest huhu1 operatorMatrix6 6
+    let huhu2= setAllNumbersStartingFromBiggest huhu1 yeye 6
     printMatrix huhu
-    print(countMatrixElementOcurrences 2 huhu)
+    printMatrix huhu2
+    print(countMatrixElementOcurrences 1 huhu)
 
     -- let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix 1
     -- printMatrix newNumbersMatrix
