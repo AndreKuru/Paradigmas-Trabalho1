@@ -3,6 +3,7 @@
 {-# HLINT ignore "Use :" #-}
 {-# HLINT ignore "Evaluate" #-}
 {-# HLINT ignore "Redundant bracket" #-}
+{-# HLINT ignore "Use String" #-}
 
 module Matrix where
 
@@ -171,14 +172,14 @@ getRowIndexThatContains element (a:b) =
     else
         1 + getRowIndexThatContains element b
 
-getElementIndexMatrix :: (Eq t) => t -> [[t]] -> [Int]
-getElementIndexMatrix _ [] = [-1,-1]
+getElementIndexMatrix :: (Eq t) => t -> [[t]] -> (Int, Int)
+getElementIndexMatrix _ [] = (-1,-1)
 getElementIndexMatrix element matrix = do
     let rowIndex = getRowIndexThatContains element matrix
-    if rowIndex > 0 && rowIndex < getNRowsMatrix matrix then
-        [rowIndex, getElementIndex element (matrix!!rowIndex)]
+    if rowIndex >= 0 && rowIndex < getNRowsMatrix matrix then
+        (rowIndex, getElementIndex element (matrix!!rowIndex))
     else
-        [-1,-1]
+        (-1,-1)
     
 -- *Imprime a matriz: matriz a ser impressa -> IO
 printMatrix :: (Show t) => [[t]] -> IO ()

@@ -75,50 +75,68 @@ checkIfSmallerThanEveryNeighbor row column operatorMatrix = do
 markAllElements :: OperatorMatrix -> Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markAllElements [] _ _ _ = []
 markAllElements _ _ _ [] = []
-markAllElements operatorMatrix numberRowIndex numberColumnIndex markingsMatrix = do
-    if numberRowIndex > getNRowsMatrix markingsMatrix then
-        markingsMatrix
-    else if numberColumnIndex > getNColumnsMatrix markingsMatrix then
-        markAllElements operatorMatrix (numberRowIndex+1) 0 markingsMatrix
-    else do
+markAllElements operatorMatrix numberRowIndex numberColumnIndex markingsMatrix
+    | numberRowIndex > getNRowsMatrix markingsMatrix = markingsMatrix
+    | numberColumnIndex > getNColumnsMatrix markingsMatrix =
+        markAllElements operatorMatrix (numberRowIndex + 1) 0 markingsMatrix
+    | otherwise = do
         let result = checkIfSmallerThanEveryNeighbor numberRowIndex numberColumnIndex operatorMatrix
-        if result then do
-            let updatedMarkingsMatrix = markMatrix numberRowIndex numberColumnIndex markingsMatrix
-            markAllElements operatorMatrix numberRowIndex (numberColumnIndex+1) updatedMarkingsMatrix
-        else
-            markAllElements operatorMatrix numberRowIndex (numberColumnIndex+1) markingsMatrix
+        if result then do 
+                let updatedMarkingsMatrix = markMatrix numberRowIndex numberColumnIndex markingsMatrix
+                markAllElements operatorMatrix numberRowIndex (numberColumnIndex + 1) updatedMarkingsMatrix
+            else
+                markAllElements operatorMatrix numberRowIndex (numberColumnIndex + 1) markingsMatrix
 
 -- matriz de marcações já pronta
-setDefinitiveNumber :: MarkingsMatrix -> NumbersMatrix -> Int -> (NumbersMatrix, [Int])
-setDefinitiveNumber [] _ _ = ([], [-1,-1])
-setDefinitiveNumber _ [] _ = ([], [-1,-1])
+setDefinitiveNumber :: MarkingsMatrix -> NumbersMatrix -> Int -> (NumbersMatrix, (Int, Int))
+setDefinitiveNumber [] _ _ = ([], (-1,-1))
+setDefinitiveNumber _ [] _ = ([], (-1,-1))
 setDefinitiveNumber markingsMatrix numbersMatrix numberToSet = do
-    let boxRows = boxesAsRows markingsMatrix
-    let [boxIndex, markingColumnInsideBox] = checkAllBoxes boxRows
+    let (boxIndex, markingColumnInsideBox) = checkAllBoxes markingsMatrix
     if boxIndex >= 0 && markingColumnInsideBox >= 0 then do
         let matrixOrder = getNColumnsMatrix markingsMatrix
-        let [numberRow, numberColumn] = getCorrectIndex [boxIndex, markingColumnInsideBox] matrixOrder
-        (setMatrixElement numberRow numberColumn numberToSet numbersMatrix, [numberRow, numberColumn])
+        let (numberRow, numberColumn) = getCorrectIndex (boxIndex, markingColumnInsideBox) matrixOrder
+        (setMatrixElement numberRow numberColumn numberToSet numbersMatrix, (numberRow, numberColumn))
     else
-        (numbersMatrix, [-1,-1])
+        (numbersMatrix, (-1,-1))
 
 
-setAllSmallerNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
-setAllSmallerNumbers numbersMatrix operatorMatrix numberToSet = do
+createAndMarkMarkingsMatrix :: NumbersMatrix -> OperatorMatrix -> MarkingsMatrix
+createAndMarkMarkingsMatrix numbersMatrix operatorMatrix = do
     let matrixOrder = getNColumnsMatrix numbersMatrix
     let markingsMatrix = fillNewMatrix matrixOrder matrixOrder False
-    let markedMatrix = markAllElements operatorMatrix 0 0 markingsMatrix 
-    setAllSmallerNumbers2 markedMatrix numbersMatrix operatorMatrix numberToSet
+    markAllElements operatorMatrix 0 0 markingsMatrix
+
+clearOperatorsAndMarkings :: (Int, Int) -> OperatorMatrix -> MarkingsMatrix -> (OperatorMatrix, MarkingsMatrix)
+clearOperatorsAndMarkings (numberRowIndex, numberColumnIndex) operatorMatrix markingsMatrix = do
+    let clearedOperatorMatrix = clearAllOperatorsNextToNumber numberRowIndex numberColumnIndex operatorMatrix
+    let clearedMarkingsMatrix = clearRowAndColumn numberRowIndex numberColumnIndex markingsMatrix
+    (clearedOperatorMatrix, clearedMarkingsMatrix)
+
+-- assume que é o começo da iteração do número em questão, então cria nova matriz de marcações do zero
+setAllSmallerNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> (NumbersMatrix, OperatorMatrix)
+setAllSmallerNumbers numbersMatrix operatorMatrix numberToSet = do
+    let markingsMatrix = createAndMarkMarkingsMatrix numbersMatrix operatorMatrix
+    setAllSmallerNumbers2 markingsMatrix numbersMatrix operatorMatrix numberToSet
 
 -- matriz de marcações já pronta
-setAllSmallerNumbers2 :: MarkingsMatrix -> NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
+setAllSmallerNumbers2 :: MarkingsMatrix -> NumbersMatrix -> OperatorMatrix -> Int -> (NumbersMatrix, OperatorMatrix)
 setAllSmallerNumbers2 markingsMatrix numbersMatrix operatorMatrix numberToSet = do
-    let (newNumbersMatrix, [numberRowIndex, numberColumnIndex]) = setDefinitiveNumber markingsMatrix numbersMatrix numberToSet
-    if numberRowIndex < 0 then 
-        newNumbersMatrix
+    let (newNumbersMatrix, (numberRowIndex, numberColumnIndex)) = setDefinitiveNumber markingsMatrix numbersMatrix numberToSet
+    if numberRowIndex < 0 then
+        (newNumbersMatrix, operatorMatrix)
     else do
-        let clearedOperatorMatrix = clearAllOperatorsNextToNumber numberRowIndex numberColumnIndex operatorMatrix
-        let clearedMarkingsMatrix = clearRowAndColumn numberRowIndex numberColumnIndex markingsMatrix
-        setAllSmallerNumbers2 clearedMarkingsMatrix numbersMatrix clearedOperatorMatrix numberToSet
+        let (clearedOperatorMatrix, clearedMarkingsMatrix) = 
+                clearOperatorsAndMarkings (numberRowIndex, numberColumnIndex) operatorMatrix markingsMatrix
+        setAllSmallerNumbers2 clearedMarkingsMatrix newNumbersMatrix clearedOperatorMatrix numberToSet
+
+
+setAllNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
+setAllNumbers numbersMatrix operatorMatrix numberToSet =
+    if numberToSet > getNColumnsMatrix numbersMatrix then
+        numbersMatrix
+    else do
+        let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix numberToSet
+        setAllNumbers newNumbersMatrix newOperatorMatrix (numberToSet+1)
         
 
