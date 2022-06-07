@@ -137,7 +137,10 @@ setAllNumbers numbersMatrix operatorMatrix numberToSet = do
     if numberToSet > matrixOrder then
         numbersMatrix
     else if operatorMatrix == fillNewMatrix (2 * matrixOrder - 1) matrixOrder '|' then
-        fillZerosWithBiggestNumber numbersMatrix
+        if countMatrixElementOcurrences (matrixOrder-1) numbersMatrix == matrixOrder then
+            fillZerosWithBiggestNumber numbersMatrix
+        else
+            numbersMatrix
     else do
         let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix numberToSet
         setAllNumbers newNumbersMatrix newOperatorMatrix (numberToSet+1)

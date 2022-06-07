@@ -181,6 +181,10 @@ getElementIndexMatrix element matrix = do
     else
         (-1,-1)
 
+countMatrixElementOcurrences :: (Eq t) => t -> [[t]] -> Int
+countMatrixElementOcurrences _ [] = 0
+countMatrixElementOcurrences element (a:b) = (countElementOcurrences element a) + countMatrixElementOcurrences element b
+
 -- *Imprime a matriz: matriz a ser impressa -> IO
 printMatrix :: (Show t) => [[t]] -> IO ()
 printMatrix [] = putStrLn []

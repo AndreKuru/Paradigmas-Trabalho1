@@ -3,20 +3,35 @@ import MarkingsMatrix
 import PuzzleSolver
 import Backtracker
 
-correctResult :: [[Int]]
-correctResult = [[1, 2, 4, 3],
-                 [4, 3, 1, 2],
-                 [3, 4, 2, 1],
-                 [2, 1, 3, 4]]
+-- correctResult :: [[Int]] -- esses dois resolve
+-- correctResult = [[1, 2, 4, 3],
+--                  [4, 3, 1, 2],
+--                  [3, 4, 2, 1],
+--                  [2, 1, 3, 4]]
 
-operatorMatrix :: OperatorMatrix
-operatorMatrix = [['<', '|', '>', '|'],
-                  ['^', '^', 'v', 'v'],
-                  ['>', '|', '<', '|'],
-                  ['|', '|', '|', '|'],
-                  ['<', '|', '>', '|'],
-                  ['v', 'v', '^', '^'],
-                  ['>', '|', '<', '|']]
+-- operatorMatrix :: OperatorMatrix
+-- operatorMatrix = [['<', '|', '>', '|'],
+--                   ['^', '^', 'v', 'v'],
+--                   ['>', '|', '<', '|'],
+--                   ['|', '|', '|', '|'],
+--                   ['<', '|', '>', '|'],
+--                   ['v', 'v', '^', '^'],
+--                   ['>', '|', '<', '|']]
+
+correctResult :: [[Int]] -- esses dois não  resolve
+correctResult = [[2, 3, 1, 4], 
+                [1, 4, 3, 2], 
+                [4, 1, 2, 3], 
+                [3, 2, 4, 1]] 
+
+
+operatorMatrix = [['<', '|', '<', '|'], 
+                    ['v', '^', '^', 'v'], 
+                    ['<', '|', '>', '|'], 
+                    ['|', '|', '|', '|'], 
+                    ['>', '|', '<', '|'], 
+                    ['v', '^', '^', 'v'], 
+                    ['>', '|', '>', '|']]
 
 -- markingsMatrix :: MarkingsMatrix
 -- markingsMatrix = fillNewMatrix 4 4 False
@@ -95,7 +110,9 @@ main = do
     -- printMatrix clearedMarkingsMatrix
 
     --printMatrix(fillZerosWithBiggestNumber numbersMatrix)
-    printMatrix(setAllNumbers numbersMatrix operatorMatrix 1)
+    let huhu= setAllNumbers numbersMatrix operatorMatrix 1
+    printMatrix huhu
+    print(countMatrixElementOcurrences 2 huhu)
 
     -- let (newNumbersMatrix, newOperatorMatrix)= setAllSmallerNumbers numbersMatrix operatorMatrix 1
     -- printMatrix newNumbersMatrix
