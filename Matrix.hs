@@ -2,6 +2,8 @@
 {-# HLINT ignore "Use foldr" #-}
 {-# HLINT ignore "Use :" #-}
 {-# HLINT ignore "Evaluate" #-}
+{-# HLINT ignore "Redundant bracket" #-}
+{-# HLINT ignore "Use String" #-}
 
 module Matrix where
 
@@ -57,6 +59,10 @@ containsElement :: (Eq t) => t -> [t] -> Bool
 containsElement _ [] = False
 containsElement element (a:b) = (a == element) || containsElement element b
 
+matrixContainsElement :: (Eq t) => t -> [[t]] -> Bool
+matrixContainsElement _ [] = False
+matrixContainsElement element (a:b) = containsElement element a || matrixContainsElement element b
+
 countElementOcurrences :: (Eq t) => t -> [t] -> Int
 countElementOcurrences _ [] = 0
 countElementOcurrences element (a:b) | a == element = 1 + countElementOcurrences element b
@@ -84,8 +90,7 @@ getNRowsMatrix (a:b) = 1 + getNRowsMatrix b
 getMatrixRow :: Int -> [[t]] -> [t]
 getMatrixRow _ [] = []
 getMatrixRow 0 (a:b) = a
-getMatrixRow n (a:b) = getMatrixRow m b
-    where m = n-1
+getMatrixRow rowIndex (a:b) = getMatrixRow (rowIndex-1) b
 
 -- assume que todas as linhas tem o mesmo comprimento
 -- *Retorna a quantidade de colunas da matriz: 
@@ -98,7 +103,7 @@ getNColumnsMatrix (a:b) = getArrayLength a
 getMatrixColumn :: Int -> [[t]] -> [t]
 getMatrixColumn _ [] = []
 getMatrixColumn n (a:b) =
-    if n >= 0 && n + 1 < getNColumnsMatrix (a:b) then
+    if n >= 0 && n < getNColumnsMatrix (a:b) then
         [a!!n] ++ getMatrixColumn n b
     else
         []
@@ -109,17 +114,20 @@ getMatrixColumn n (a:b) =
 getMatrixElement :: Int -> Int -> Matrix -> Int
 getMatrixElement _ _ [] = - 1
 getMatrixElement row column matrix =
-    if (column >= 0) && (column < (getNColumnsMatrix matrix)) then
-        getMatrixRow row matrix!!column
+    if (column >= 0) && (column < getNColumnsMatrix matrix)  && (row >= 0) && (row < getNRowsMatrix matrix) then
+        (getMatrixRow row matrix)!!column
     else
         (-1)
 
 -- Retorna elemento da matriz de operadores:
 -- linha -> coluna -> matriz -> operador
-getMatrixOperatorElement :: Int -> Int -> [[t]] -> t
-getMatrixOperatorElement row column matrix = 
-  getMatrixRow row matrix!!column
-
+getOperatorMatrixElement :: Int -> Int -> [[Char]] -> Char
+getOperatorMatrixElement row column matrix = 
+    if (column >= 0) && (column < getNColumnsMatrix matrix) && (row >= 0) && (row < getNRowsMatrix matrix) then
+        (getMatrixRow row matrix)!!column
+    else
+        '|'
+        
 -- todo: ainda tá errado (se beggining > end ou se inserir número negativo dá errado)
 -- por enquanto, o começo é inclusivo mas o final não
 -- ex: splitArray 2 4 [1,2,3,4,5] = [3,4]
@@ -168,15 +176,19 @@ getRowIndexThatContains element (a:b) =
     else
         1 + getRowIndexThatContains element b
 
-getElementIndexMatrix :: (Eq t) => t -> [[t]] -> [Int]
-getElementIndexMatrix _ [] = [-1,-1]
+getElementIndexMatrix :: (Eq t) => t -> [[t]] -> (Int, Int)
+getElementIndexMatrix _ [] = (-1,-1)
 getElementIndexMatrix element matrix = do
     let rowIndex = getRowIndexThatContains element matrix
-    if rowIndex > 0 && rowIndex < getNRowsMatrix matrix then
-        [rowIndex, getElementIndex element (matrix!!rowIndex)]
+    if rowIndex >= 0 && rowIndex < getNRowsMatrix matrix then
+        (rowIndex, getElementIndex element (matrix!!rowIndex))
     else
-        [-1,-1]
-    
+        (-1,-1)
+
+countMatrixElementOcurrences :: (Eq t) => t -> [[t]] -> Int
+countMatrixElementOcurrences _ [] = 0
+countMatrixElementOcurrences element (a:b) = (countElementOcurrences element a) + countMatrixElementOcurrences element b
+
 -- *Imprime a matriz: matriz a ser impressa -> IO
 printMatrix :: (Show t) => [[t]] -> IO ()
 printMatrix [] = putStrLn []
