@@ -1,14 +1,46 @@
 import Matrix
 import MarkingsMatrix
-import Solver
+import PuzzleSolver
+import Backtracker
 
-myMatrix :: Matrix
-myMatrix4 = [[2, 3, 1, 4], 
-            [1, 4, 3, 2], 
-            [4, 1, 2, 3], 
-            [3, 2, 4, 1]] 
+-- exemplo de matriz de operadores para tabuleiro 4x4
+operatorMatrix :: OperatorMatrix
+operatorMatrix = [['<', '|', '>', '|'],
+                  ['^', '^', 'v', 'v'],
+                  ['>', '|', '<', '|'],
+                  ['|', '|', '|', '|'],
+                  ['<', '|', '>', '|'],
+                  ['v', 'v', '^', '^'],
+                  ['>', '|', '<', '|']]
 
-myMatrixOperator9 = [
+-- exemplo 2 de matriz de operadores para tabuleiro 4x4
+operatorMatrix4 :: OperatorMatrix
+operatorMatrix4 = [['<', '|', '<', '|'], 
+                   ['v', '^', '^', 'v'], 
+                   ['<', '|', '>', '|'], 
+                   ['|', '|', '|', '|'], 
+                   ['>', '|', '<', '|'], 
+                   ['v', '^', '^', 'v'], 
+                   ['>', '|', '>', '|']]
+
+-- exemplo de matriz de operadores para tabuleiro 6x6
+operatorMatrix6 :: OperatorMatrix
+operatorMatrix6 = [
+  ['<', '|', '>', '|', '>', '|'],
+  ['^', 'v', '^', '^', '^', 'v'],
+  ['>', '|', '>', '|', '>', '|'],
+  ['v', 'v', 'v', '^', '^', '^'],
+  ['<', '|', '<', '|', '<', '|'],
+  ['|', '|', '|', '|', '|', '|'],
+  ['<', '|', '<', '|', '<', '|'],
+  ['^', '^', 'v', 'v', '^', 'v'],
+  ['>', '|', '<', '|', '<', '|'],
+  ['v', 'v', '^', '^', '^', 'v'],
+  ['>', '|', '<', '|', '>', '|']]
+
+-- exemplo de matriz de operadores para tabuleiro 9x9
+operatorMatrix9 :: OperatorMatrix
+operatorMatrix9 = [
   ['<', '>', '|', '<', '<', '|', '>', '>', '|'],
   ['v', '^', '^', 'v', 'v', 'v', '^', 'v', '^'],
   ['<', '<', '|', '<', '>', '|', '>', '<', '|'],
@@ -27,35 +59,12 @@ myMatrixOperator9 = [
   ['^', '^', 'v', 'v', 'v', '^', 'v', '^', 'v'],
   ['<', '>', '|', '<', '<', '|', '<', '>', '|']]
 
-myMatrixOperator6 = [
-  ['<', '|', '>', '|', '>', '|'],
-  ['^', 'v', '^', '^', '^', 'v'],
-  ['>', '|', '>', '|', '>', '|'],
-  ['v', 'v', 'v', '^', '^', '^'],
-  ['<', '|', '<', '|', '<', '|'],
-  ['|', '|', '|', '|', '|', '|'],
-  ['<', '|', '<', '|', '<', '|'],
-  ['^', '^', 'v', 'v', '^', 'v'],
-  ['>', '|', '<', '|', '<', '|'],
-  ['v', 'v', '^', '^', '^', 'v'],
-  ['>', '|', '<', '|', '>', '|']]
-
-myMatrixOperator4 = [['<', '|', '<', '|'],  -- 0 2 deveria ser <
-                    ['v', '^', '^', 'v'], 
-                    ['<', '|', '>', '|'], 
-                    ['|', '|', '|', '|'], 
-                    ['>', '|', '<', '|'], 
-                    ['v', '^', '^', 'v'], 
-                    ['>', '|', '>', '|']]
-
-try = [[2, 3, 1, 4], [1, 4, 3, 2], [3, 1, 2, 4], [4, 0, 0, 0]] 
-
+main :: IO ()
 main = do
-    
-    print (validateright 1 0 try myMatrixOperator)
-    print (validateleft  1 0 try myMatrixOperator)
-    print (validatedown  1 0 try myMatrixOperator)
-    print (validateup    1 0 try myMatrixOperator)
-    printMatrix (solveMatrix myMatrixOperator4)
-    printMatrix (solveMatrix myMatrixOperator6)
-    printMatrix (solveMatrix myMatrixOperator9)
+
+    putStrLn " "
+    printMatrix(solvePuzzle operatorMatrix9)
+
+        
+
+

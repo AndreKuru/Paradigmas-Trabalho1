@@ -114,15 +114,16 @@ boxesAsRows matrix = do
 
 -- Converte index da matriz de caixas como colunas para index da matrix original
 -- [index da caixa, index dentro da caixa] -> ordem da matriz -> [linha, coluna]
-getCorrectIndex :: [Int] -> Int -> [Int]
-getCorrectIndex [] _ = []
-getCorrectIndex _ 0 = []
-getCorrectIndex (a:b) matrixOrder = do
-    let indexMatrix = fillNewMatrix matrixOrder matrixOrder False
-    nColumns <- b
-    let markedIndexMatrix = markMatrix a nColumns indexMatrix
-    let boxesIndexMatrix = boxesAsRows(boxesAsRows markedIndexMatrix)
-    getElementIndexMatrix True boxesIndexMatrix
+getCorrectIndex :: (Int, Int) -> Int -> (Int, Int)
+getCorrectIndex (_,_) 0 = (-1,-1)
+getCorrectIndex (boxIndex,markingIndexInsideBox) matrixOrder =
+    if boxIndex < 0 || boxIndex >= matrixOrder || markingIndexInsideBox < 0 || markingIndexInsideBox >= matrixOrder then
+        (-1,-1)
+    else do
+        let indexMatrix = fillNewMatrix matrixOrder matrixOrder False
+        let markedIndexMatrix = markMatrix boxIndex markingIndexInsideBox indexMatrix
+        let boxesIndexMatrix = boxesAsRows markedIndexMatrix
+        getElementIndexMatrix True boxesIndexMatrix
 
 -- Marca a matriz na posição:
 -- linha -> coluna -> Matriz de marcação -> Matriz de marcação marcada
@@ -137,7 +138,7 @@ checkBox = containsOneElement True
 -- Caixa já estando como linha
 -- Retorna index da primeira caixa encontrada que só tem 1 True
 getBoxIndex :: [[Bool]] -> Int
-getBoxIndex [] = 0
+getBoxIndex [] = 54
 getBoxIndex (a:b) =
     if checkBox a then
         0
@@ -146,22 +147,42 @@ getBoxIndex (a:b) =
 
 -- Caixa já estando como linha
 -- Checa todas as caixas por 1 True e retorna [index da caixa, index da marcação na caixa]
-getCorrectMarkingIndex :: [[Bool]] -> [Int]
-getCorrectMarkingIndex [] = [-1,-1]
+getCorrectMarkingIndex :: [[Bool]] -> (Int, Int)
+getCorrectMarkingIndex [] = (-1,-1)
 getCorrectMarkingIndex boxes = do
     let boxIndex = getBoxIndex boxes
-    if boxIndex > 0 && boxIndex < getNRowsMatrix boxes then
-        [boxIndex, getElementIndex True (boxes!!boxIndex)]
+    if boxIndex >= 0 && boxIndex < getNRowsMatrix boxes then
+        (boxIndex, getElementIndex True (boxes!!boxIndex))
     else
-        [-1, -1]
+        (-1, -1)
 
 -- Funçao de checar todas as caixas por 1 único true a partir de uma matriz de marcações normal
 -- e retornar o index da marcação pra pôr o número na matriz de números
+checkAllBoxes :: MarkingsMatrix -> (Int, Int)
 checkAllBoxes matrix = do
     let boxRows = boxesAsRows matrix
     getCorrectMarkingIndex boxRows
 
+-- Percorre a matriz de marcação por alguma marcação que seja única em sua linha e coluna
+checkAllMarkings :: MarkingsMatrix -> Int -> (Int, Int)
+checkAllMarkings matrix rowIndex | rowIndex >= getNRowsMatrix matrix = (-1,-1)
+checkAllMarkings matrix rowIndex = do
+    let row = getMatrixRow rowIndex matrix
+    let result = containsOneElement True row
+    if result then do
+        let markingColumn = getElementIndex True row
+        let column = getMatrixColumn markingColumn matrix
+        let result2 = containsOneElement True column
+        if result2 then
+            (rowIndex, markingColumn)
+        else
+            checkAllMarkings matrix (rowIndex+1)
+    else
+        checkAllMarkings matrix (rowIndex+1)
+
+
 -- quando é oficialmente anotado o menor número de alguma caixa, é preciso
+-- limpar as marcações da linha e coluna do index do número anotado
 -- linha -> coluna -> matriz de marcação -> matriz de marcação com linha e coluna sem "True"
 -- linha -> coluna -> matriz de marcação -> matriz de marcação com linha e coluna sem "True"
 clearRowAndColumn :: Int -> Int -> MarkingsMatrix -> MarkingsMatrix
