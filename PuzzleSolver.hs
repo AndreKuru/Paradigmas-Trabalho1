@@ -86,6 +86,8 @@ checkIfBiggerThanEveryNeighbor row column operatorMatrix = do
     not ((rightOperator == '|') && (leftOperator == '|') && (topOperator == '|') && (bottomOperator == '|')) &&
         not ((rightOperator == '<') || (leftOperator == '>') || (topOperator == 'v') || (bottomOperator == '^'))
 
+-- Marca todos os elementos menores a partir dos operadores:
+-- Matriz de comparação -> linha a ser preenchida -> coluna a ser preenchida -> matriz de marcação -> matriz com novas marcações
 markAllSmallerElements :: OperatorMatrix -> Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markAllSmallerElements [] _ _ _ = []
 markAllSmallerElements _ _ _ [] = []
@@ -101,6 +103,8 @@ markAllSmallerElements operatorMatrix numberRowIndex numberColumnIndex markingsM
             else
                 markAllSmallerElements operatorMatrix numberRowIndex (numberColumnIndex + 1) markingsMatrix
 
+-- Marca todos os elementos maiores a partir dos operadores:
+-- Matriz de comparação -> linha a ser preenchida -> coluna a ser preenchida -> matriz de marcação -> matriz com novas marcações
 markAllBiggerElements :: OperatorMatrix -> Int -> Int -> MarkingsMatrix -> MarkingsMatrix
 markAllBiggerElements [] _ _ _ = []
 markAllBiggerElements _ _ _ [] = []
@@ -116,7 +120,8 @@ markAllBiggerElements operatorMatrix numberRowIndex numberColumnIndex markingsMa
             else
                 markAllBiggerElements operatorMatrix numberRowIndex (numberColumnIndex + 1) markingsMatrix
 
--- matriz de marcações já pronta
+-- Marca um número na matriz de números:
+-- Matriz de marcação -> matriz de números -> valor a ser preenchido -> (matriz de números atualizada, (coordenadas do preenchimento))
 setDefinitiveNumber :: MarkingsMatrix -> NumbersMatrix -> Int -> (NumbersMatrix, (Int, Int))
 setDefinitiveNumber [] _ _ = ([], (-1,-1))
 setDefinitiveNumber _ [] _ = ([], (-1,-1))
@@ -129,37 +134,46 @@ setDefinitiveNumber markingsMatrix numbersMatrix numberToSet = do
     else
         (numbersMatrix, (-1,-1))
 
+-- Cria matriz de marcação dos menores números de acordo com os comparadores:
+-- Matriz de números -> matriz de operadores -> matriz de marcação
 createAndMarkSmallerMarkingsMatrix :: NumbersMatrix -> OperatorMatrix -> MarkingsMatrix
 createAndMarkSmallerMarkingsMatrix numbersMatrix operatorMatrix = do
     let matrixOrder = getNColumnsMatrix numbersMatrix
     let markingsMatrix = fillNewMatrix matrixOrder matrixOrder False
     markAllSmallerElements operatorMatrix 0 0 markingsMatrix
 
+-- Cria matriz de marcação dos maiores números de acordo com os comparadores:
+-- Matriz de números -> matriz de operadores -> matriz de marcação
 createAndMarkBiggerMarkingsMatrix :: NumbersMatrix -> OperatorMatrix -> MarkingsMatrix
 createAndMarkBiggerMarkingsMatrix numbersMatrix operatorMatrix = do
     let matrixOrder = getNColumnsMatrix numbersMatrix
     let markingsMatrix = fillNewMatrix matrixOrder matrixOrder False
     markAllBiggerElements operatorMatrix 0 0 markingsMatrix
 
+-- Limpa matriz de marcações e operadores baseado das coordenadas passadas quando preenche um número:
+-- (linha, coluna) -> matriz de operadores -> matriz de marcação -> (matriz de operadores limpa, matriz de marcação limpa)
 clearOperatorsAndMarkings :: (Int, Int) -> OperatorMatrix -> MarkingsMatrix -> (OperatorMatrix, MarkingsMatrix)
 clearOperatorsAndMarkings (numberRowIndex, numberColumnIndex) operatorMatrix markingsMatrix = do
     let clearedOperatorMatrix = clearAllOperatorsNextToNumber numberRowIndex numberColumnIndex operatorMatrix
     let clearedMarkingsMatrix = clearRowAndColumn numberRowIndex numberColumnIndex markingsMatrix
     (clearedOperatorMatrix, clearedMarkingsMatrix)
 
--- assume que é o começo da iteração do número em questão, então cria nova matriz de marcações do zero
+-- Assume que é o começo da iteração do número em questão, então cria nova matriz de marcações do zero
+-- Matriz de números -> matriz de operadores -> valor a ser preenchido -> (Matriz de números preenchida, matriz de operadores com menos comparadores)
 setAllSmallerNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> (NumbersMatrix, OperatorMatrix)
 setAllSmallerNumbers numbersMatrix operatorMatrix numberToSet = do
     let markingsMatrix = createAndMarkSmallerMarkingsMatrix numbersMatrix operatorMatrix
     setAllNumbersFromIteration markingsMatrix numbersMatrix operatorMatrix numberToSet
 
--- assume que é o começo da iteração do número em questão, então cria nova matriz de marcações do zero
+-- Assume que é o começo da iteração do número em questão, então cria nova matriz de marcações do zero
+-- Matriz de números -> matriz de operadores -> valor a ser preenchido -> (Matriz de números preenchida, matriz de operadores com menos comparadores)
 setAllBiggerNumbers :: NumbersMatrix -> OperatorMatrix -> Int -> (NumbersMatrix, OperatorMatrix)
 setAllBiggerNumbers numbersMatrix operatorMatrix numberToSet = do
     let markingsMatrix = createAndMarkBiggerMarkingsMatrix numbersMatrix operatorMatrix
     setAllNumbersFromIteration markingsMatrix numbersMatrix operatorMatrix numberToSet
 
--- matriz de marcações já pronta
+-- Preenche os números de mesmo valor a partir da matriz de marcação:
+-- Matriz de marcação -> matriz de números -> matriz de operadores -> valor a ser preenchido -> (Matriz de números preenchida, matriz de operadores com menos comparadores)
 setAllNumbersFromIteration :: MarkingsMatrix -> NumbersMatrix -> OperatorMatrix -> Int -> (NumbersMatrix, OperatorMatrix)
 setAllNumbersFromIteration markingsMatrix numbersMatrix operatorMatrix numberToSet = do
     let (newNumbersMatrix, (numberRowIndex, numberColumnIndex)) = setDefinitiveNumber markingsMatrix numbersMatrix numberToSet
@@ -170,6 +184,8 @@ setAllNumbersFromIteration markingsMatrix numbersMatrix operatorMatrix numberToS
                 clearOperatorsAndMarkings (numberRowIndex, numberColumnIndex) operatorMatrix markingsMatrix
         setAllNumbersFromIteration clearedMarkingsMatrix newNumbersMatrix clearedOperatorMatrix numberToSet
 
+-- Preenche todos os números a partir dos menores:
+-- Matriz de números -> matriz de operadores -> valor utilizado para preencher -> Matriz resultado
 setAllNumbersStartingFromSmallest :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
 setAllNumbersStartingFromSmallest numbersMatrix operatorMatrix numberToSet = do
     let matrixOrder = getNColumnsMatrix numbersMatrix
@@ -187,6 +203,8 @@ setAllNumbersStartingFromSmallest numbersMatrix operatorMatrix numberToSet = do
         else
             setAllNumbersStartingFromSmallest newNumbersMatrix newOperatorMatrix (numberToSet+1)
 
+-- Preenche todos os números a partir dos maiores:
+-- Matriz de números -> matriz de operadores -> valor utilizado para preencher -> Matriz resultado
 setAllNumbersStartingFromBiggest :: NumbersMatrix -> OperatorMatrix -> Int -> NumbersMatrix
 setAllNumbersStartingFromBiggest numbersMatrix operatorMatrix numberToSet = do
     let matrixOrder = getNColumnsMatrix numbersMatrix
@@ -199,7 +217,8 @@ setAllNumbersStartingFromBiggest numbersMatrix operatorMatrix numberToSet = do
         else
             setAllNumbersStartingFromBiggest newNumbersMatrix newOperatorMatrix (numberToSet-1)
 
-
+-- Preenche o resto dos números nulos com o maior número:
+-- Matriz de números com nulos -> matriz de números sem nulos
 fillZerosWithBiggestNumber :: NumbersMatrix -> NumbersMatrix
 fillZerosWithBiggestNumber [] = []
 fillZerosWithBiggestNumber numbersMatrix = do
@@ -211,6 +230,8 @@ fillZerosWithBiggestNumber numbersMatrix = do
     else
         numbersMatrix
 
+-- Elimina os comparadores da matriz de comparadores baseado nos elementos não nulos da matriz de números:
+-- Linha -> Coluna -> matriz de números -> matriz de operadores -> matriz de operadores enxugada
 getOperatorMatrixFromNumbersMatrix :: Int -> Int -> NumbersMatrix -> OperatorMatrix -> OperatorMatrix
 getOperatorMatrixFromNumbersMatrix _ _ [] _ = []
 getOperatorMatrixFromNumbersMatrix _ _ _ [] = []

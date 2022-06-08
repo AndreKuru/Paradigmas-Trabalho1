@@ -63,7 +63,20 @@ main :: IO ()
 main = do
 
     putStrLn " "
+    -- Utilizando o algoritmo de resolução proposto sem backtracking
+    printMatrix(solvePuzzle operatorMatrix)
+    printMatrix(solvePuzzle operatorMatrix4)
+    printMatrix(solvePuzzle operatorMatrix6)
     printMatrix(solvePuzzle operatorMatrix9)
+
+
+    -- Utilizando somente backtracking
+    printMatrix(solveMatrix operatorMatrix)
+    printMatrix(solveMatrix operatorMatrix4)
+    printMatrix(solveMatrix operatorMatrix6)
+    printMatrix(solveMatrix operatorMatrix9)
+
+
 
         
 

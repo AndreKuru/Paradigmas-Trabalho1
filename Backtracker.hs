@@ -170,54 +170,10 @@ solveLine row column value matrixNumber matrixOperator =
   else                                                    
     (setMatrixElement 3 2 (-2) try)  --test               -- Se não tem um chute válido retorna a exceção -2
 
---   if (value /= 1) then                 -- test begin
---     (setMatrixElement 3 0 2 (setMatrixElement 3 3 (-5) try))
---   else                                 -- test end
---   if (column  >= (getMaxValue matrixOperator)) then                           -- Verifica se existe mais elementos na linha para chutar
---     matrixNumber
---   else if ((getMatrixElement 3 3 try) == (-1)) then -- test
---     (setMatrixElement 3 2 (-2) try)  --test                                   -- Se não retorna a exceção -2
---   else if ((getMatrixElement 3 2 try) == (-2)) then -- test
---     (solveLine row column lastValue matrixNumber matrixOperator)
---   else                                                                        -- Se não deu exceção é um chute válido, então tenta o próximo valor
---     if ((getMatrixElement 3 3 nextTry) == (-2)) then -- test
---       (solveLine row column lastValue matrixNumber matrixOperator)
---       
--- 
-  where try =       (solveElement row column value matrixNumber matrixOperator)           -- Dá um chute num elemento da linha
-        tryAgain  = (solveLine row column (lastValue + 1) try matrixOperator) -- Dá um novo chute num elemento da linha
+  where try =       (solveElement row column value matrixNumber matrixOperator)  -- Dá um chute num elemento da linha
+        tryAgain  = (solveLine row column (lastValue + 1) try matrixOperator)    -- Dá um novo chute num elemento da linha
         lastValue = (getMatrixElement row column try)                            -- Valor do último chute
-        nextTry   = (solveLine row (column + 1) 1 try matrixOperator)                    -- Chuta o próximo elemento
-
--- Tenta todas as linhas de uma determinada matriz a partir da linha informada:
--- Linha inicial -> Matriz de números -> Matriz de operadores -> Matriz resposta
--- solveLines :: Int -> [[Int]] -> [[Char]] -> [[Int]]
--- solveLines row matrixNumber matrixOperator =  try
-  -- if (row >= (getMaxValue matrixOperator)) then
-  --   matrixNumber
-  -- else if (validateTry2 try) then
-  --   if (validateTry3 nextTry) then
-  --     nextTry
-  --   else
-  --     tryAgain
-
-
---  if
---  (row >= (getMaxValue matrixOperator)) then                                  -- Verifica se existe mais linhas para chutar
---    matrixNumber
---
---  else if
---  ((getMatrixElement 3 2 try) /= (-2)) -- test
---  -- (try /= [[-2]]) &&                                                       -- Verifica se o chute deu certo
---  then
---                                                                               
---    (solveLines (row + 1) try matrixOperator)                                 -- Se sim chuta chuta a próxima linha a partir das linhas anteriores
---                                                                               
---  else                                                                         
---    -- [[-3]]                                                                 -- Se não retorna exceção
---    (setMatrixElement 3 1 (-3) try)  --test
---                                                                               
---  where try = (solveLine row 0 1 matrixNumber matrixOperator)                 --  Tenta solucionar a linha informada desde o primeiro elemento
+        nextTry   = (solveLine row (column + 1) 1 try matrixOperator)            -- Chuta o próximo elemento
 
 -- Cria uma matriz zerada de ordem N:
 -- N --> Matriz de números zerada
